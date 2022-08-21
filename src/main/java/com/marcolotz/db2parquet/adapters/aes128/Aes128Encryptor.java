@@ -1,7 +1,6 @@
 package com.marcolotz.db2parquet.adapters.aes128;
 
 import com.marcolotz.db2parquet.port.Encryptor;
-import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
@@ -26,15 +25,20 @@ import java.security.NoSuchProviderException;
  * The bottleneck of the data transformation should be in the database Network side and not on CPU usage
  * from encryption.
  */
-@Data
 @Log4j2
 public class Aes128Encryptor implements Encryptor {
 
     public static final int GCM_IV_LENGTH = 12;
     public static final String AES_GCM_CIPHER_LBL = "AES/GCM/NoPadding";
 
-    private byte[] encryptionKey;
-    private AesKey.ExpandedKey ENC_DEFAULT_KEY_128 = AesKey.KeySize.AES_128.genKeysHmacSha(encryptionKey);
+    private final byte[] encryptionKey;
+    AesKey.ExpandedKey ENC_DEFAULT_KEY_128;
+
+    public Aes128Encryptor(final byte[] encryptionKey)
+    {
+        this.encryptionKey = encryptionKey;
+        ENC_DEFAULT_KEY_128 = AesKey.KeySize.AES_128.genKeysHmacSha(encryptionKey);
+    }
 
     @Override
     @SneakyThrows
@@ -94,4 +98,9 @@ public class Aes128Encryptor implements Encryptor {
         return cipher.doFinal(encryptedMessage, cipherTextPos, cipherTextLen);
     }
 
+    // Used only for testing
+    @SneakyThrows
+    byte[] decrypt(byte[] encryptedOutput) {
+        return decryptGCM(ENC_DEFAULT_KEY_128, encryptedOutput);
+    }
 }

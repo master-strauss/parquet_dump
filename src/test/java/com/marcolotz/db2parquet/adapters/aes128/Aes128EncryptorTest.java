@@ -4,6 +4,7 @@ import com.marcolotz.db2parquet.port.Encryptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("When using AES128 GCM")
@@ -51,7 +52,7 @@ class Aes128EncryptorTest {
             "In other words\n" +
             "You gotta be Heaven to see Heaven\n" +
             "May peace be with you";
-    Encryptor encryption = new Aes128Encryptor();
+    Aes128Encryptor encryption = new Aes128Encryptor("ThisIsAnEncryptionKey".getBytes());
 
     @DisplayName("Then the encryption should AES 128 GCM and should be possible to decrypt")
     @Test
@@ -62,10 +63,11 @@ class Aes128EncryptorTest {
 
         // When
         final byte[] encryptedOutput = encryption.encrypt(b);
+        final byte[] descryptedOutput = encryption.decrypt(encryptedOutput);
 
         // Then
-        assertEquals(b, encryptedOutput);
-        final String decodedMessage = new String(encryptedOutput);
+        assertArrayEquals(b, descryptedOutput);
+        final String decodedMessage = new String(descryptedOutput);
         assertEquals(message, decodedMessage);
     }
 }
