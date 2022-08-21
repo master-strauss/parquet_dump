@@ -16,13 +16,11 @@ public interface ResultSetTransformer {
      * @param resultSet  The resultset to transform.
      * @param schemaName Schema name.
      * @param namespace  Schema namespace.
-     * @param listeners
      * @return InputStream containing the transformed data.
      * @throws IOException
      * @throws SQLException
      */
-    InputStream transform(ResultSet resultSet, String schemaName, String namespace,
-                          List<TransformerListener> listeners) throws IOException, SQLException;
+    InputStream transform(ResultSet resultSet, String schemaName, String namespace) throws IOException, SQLException;
 
 
     /**

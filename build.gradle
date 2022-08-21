@@ -42,6 +42,12 @@ dependencies {
     implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
 
+    // Apache Parquet related:
+    implementation  group: 'org.apache.parquet', name: 'parquet-avro', version: '1.12.3'
+    implementation  group: 'org.apache.parquet', name: 'parquet-hadoop', version: '1.12.3'
+    implementation  group: 'org.apache.hadoop', name: 'hadoop-common', version: '2.10.1'
+    implementation  group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: '2.10.1'
+
     // Encryption:
     implementation 'at.favre.lib:hkdf:1.0.2'
 
