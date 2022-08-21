@@ -14,9 +14,11 @@ import java.io.OutputStream;
  */
 public class InMemoryOutputFile implements OutputFile {
 
-    private static final int ONE_GIGABYTE = 1024 * 1024;
+    // Ideally this should be 1GB, but this puts stress in the machine loading tests
+    // TODO: Find a more elegant solution to avoid dynamic extension
+    private static final int BUFFER_64_MB = 1024 * 1024 * 64;
 
-    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(ONE_GIGABYTE);
+    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(BUFFER_64_MB);
 
     @Override
     public PositionOutputStream create(long blockSizeHint) { // Mode.CREATE calls this method
