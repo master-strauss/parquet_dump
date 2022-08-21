@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.3'
-	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
-	id 'java'
-	id "org.openapi.generator" version "6.0.1"
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+    id 'java'
+    id "org.openapi.generator" version "6.0.1"
 }
 
 group = 'com.marcolotz'
@@ -10,57 +10,61 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	swagger_annotations_version = "1.5.22"
+    swagger_annotations_version = "1.5.22"
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	compileOnly('org.springframework.boot:spring-boot-starter-web'){
-		// Removed since I am using Log4j2 instead
-		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-	}
-	compileOnly 'org.projectlombok:lombok'
-	//runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
-	annotationProcessor 'org.projectlombok:lombok'
-	// Async logging to avoid I/O bottlenecks when benchmarking serialization
-	runtimeOnly 'org.springframework.boot:spring-boot-starter-log4j2'
-	// High Performance ring queue:
-	implementation 'com.lmax:disruptor:3.4.4'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	// Open API:
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	annotationProcessor "io.swagger:swagger-annotations:$swagger_annotations_version"
-	implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
-	implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
+    compileOnly 'org.projectlombok:lombok'
+    //runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+    annotationProcessor 'org.projectlombok:lombok'
+    // Async logging to avoid I/O bottlenecks when benchmarking serialization
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl'
+    runtimeOnly 'org.springframework.boot:spring-boot-starter-log4j2'
+    // High Performance ring queue:
+    implementation 'com.lmax:disruptor:3.4.4'
 
-	// Encryption:
-	implementation 'at.favre.lib:hkdf:1.0.2'
+    // Open API:
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    annotationProcessor "io.swagger:swagger-annotations:$swagger_annotations_version"
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
 
-	// Test dependencies:
-	testImplementation 'org.assertj:assertj-core'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testImplementation 'org.mockito:mockito-junit-jupiter'
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'com.h2database:h2' // DB used for testing
+    // Encryption:
+    implementation 'at.favre.lib:hkdf:1.0.2'
+
+    // Test dependencies:
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2' // DB used for testing
+}
+
+// Fix to have only log4j2 installed
+configurations {
+    all*.exclude module : 'spring-boot-starter-logging'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 /* Generate Server Code from OpenAPI definition */
@@ -68,28 +72,26 @@ def commandApiPath = "$rootDir/src/main/resources/api/command_ingestion.yaml".to
 
 /* server code configuration */
 task commandApiServerCode(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-	generatorName = "spring"
-	inputSpec = commandApiPath
-	outputDir = "$buildDir/generated".toString()
+    generatorName = "spring"
+    inputSpec = commandApiPath
+    outputDir = "$buildDir/generated".toString()
 
-	groupId = "$project.group"
-	id = "$project.name-java-server"
-	version = "$project.version"
-	apiPackage = "com.marcolotz.db2parquet.api"
-	modelPackage = "com.marcolotz.db2parquet.api.model"
-	enablePostProcessFile = true
-	skipOverwrite = false
-	configOptions = [
-			configPackage       : "com.marcolotz.db2parquet.api.config",
-			java8               : "true",
-			dateLibrary         : "java8",
-			serializationLibrary: "jackson",
-			library             : "spring-boot",
-			useBeanValidation   : "false",
-			interfaceOnly       : "true",
-			serializableModel   : "true",
-			useTags             : "true"
-	]
+    groupId = "$project.group"
+    id = "$project.name-java-server"
+    version = "$project.version"
+    apiPackage = "com.marcolotz.db2parquet.api"
+    modelPackage = "com.marcolotz.db2parquet.api.model"
+    enablePostProcessFile = true
+    skipOverwrite = false
+    configOptions = [configPackage       : "com.marcolotz.db2parquet.api.config",
+                     java8               : "true",
+                     dateLibrary         : "java8",
+                     serializationLibrary: "jackson",
+                     library             : "spring-boot",
+                     useBeanValidation   : "false",
+                     interfaceOnly       : "true",
+                     serializableModel   : "true",
+                     useTags             : "true"]
 }
 
 // code will be generated during compilation
@@ -98,9 +100,9 @@ compileJava.dependsOn(commandApiServerCode)
 
 // attach the generated folder as source for this project
 sourceSets {
-	main {
-		java {
-			srcDir "$buildDir/generated/src/main/java"
-		}
-	}
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
 }

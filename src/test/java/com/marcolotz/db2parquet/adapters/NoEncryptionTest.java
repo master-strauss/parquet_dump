@@ -1,5 +1,6 @@
 package com.marcolotz.db2parquet.adapters;
 
+import com.marcolotz.db2parquet.port.Encryptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("When using not encryption")
 class NoEncryptionTest {
 
-    NoEncryption encryption = new NoEncryption();
+    Encryptor encryption = new NoEncryption();
 
     @DisplayName("Then the encryption should be an identity mapping")
     @Test

@@ -66,4 +66,32 @@ public class Aes128Encryptor implements Encryptor {
         return output;
     }
 
+    // Used only for testing and validation ... Probably should move to the test and remove from here
+    // However, this is just a PoC and fixing all the dependencies may take time :)
+    byte[] decryptGCM(AesKey.ExpandedKey key, byte[] encryptedMessage) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, NoSuchPaddingException {
+
+        int i = 0;
+        int cipherVersion = encryptedMessage[i++];
+
+        int ivLength = encryptedMessage[i++];
+
+        if (ivLength != GCM_IV_LENGTH) { // check input parameter
+            throw new IllegalArgumentException("invalid iv length: " + ivLength);
+        }
+
+        int ivPos = i;
+
+        byte[] iv = new byte[ivLength];
+        System.arraycopy(encryptedMessage, ivPos, iv, 0, ivLength);
+        i += ivLength;
+
+        int cipherTextPos = i;
+        int cipherTextLen = encryptedMessage.length - cipherTextPos;
+
+        final Cipher cipher = Cipher.getInstance(AES_GCM_CIPHER_LBL);
+        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key.encKey, "AES"), new GCMParameterSpec(key.keySize.getKeySizeBits(), iv));
+
+        return cipher.doFinal(encryptedMessage, cipherTextPos, cipherTextLen);
+    }
+
 }
