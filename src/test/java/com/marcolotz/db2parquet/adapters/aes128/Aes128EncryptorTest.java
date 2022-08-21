@@ -1,6 +1,5 @@
 package com.marcolotz.db2parquet.adapters.aes128;
 
-import com.marcolotz.db2parquet.port.Encryptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
