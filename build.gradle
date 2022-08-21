@@ -34,12 +34,17 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// Async logging to avoid I/O bottlenecks when benchmarking serialization
 	runtimeOnly 'org.springframework.boot:spring-boot-starter-log4j2'
+	// High Performance ring queue:
+	implementation 'com.lmax:disruptor:3.4.4'
 
 	// Open API:
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	annotationProcessor "io.swagger:swagger-annotations:$swagger_annotations_version"
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
 	implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
+
+	// Encryption:
+	implementation 'at.favre.lib:hkdf:1.0.2'
 
 	// Test dependencies:
 	testImplementation 'org.assertj:assertj-core'
