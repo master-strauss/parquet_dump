@@ -13,8 +13,10 @@ import java.io.OutputStream;
  * https://stackoverflow.com/questions/39631812/q-converting-avro-to-parquet-in-memory
  */
 public class InMemoryOutputFile implements OutputFile {
-    // TODO: increase buffering strategy
-    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+    private static final int ONE_GIGABYTE = 1024 * 1024;
+
+    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(ONE_GIGABYTE);
 
     @Override
     public PositionOutputStream create(long blockSizeHint) { // Mode.CREATE calls this method

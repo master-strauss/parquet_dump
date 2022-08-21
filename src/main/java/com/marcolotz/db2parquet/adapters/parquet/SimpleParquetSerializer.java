@@ -63,6 +63,7 @@ public class SimpleParquetSerializer implements ParquetSerializer {
             parquetWriter.write(record);
         }
 
+        resultSet.close(); // Needs to terminate the session with the DB -  ideally should happen in the JDBC worker
         parquetWriter.close();
         return inMemoryOutputFile.toArray();
     }

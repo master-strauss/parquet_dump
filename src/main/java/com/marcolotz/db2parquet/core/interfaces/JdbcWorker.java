@@ -1,11 +1,11 @@
 package com.marcolotz.db2parquet.core.interfaces;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public interface JdbcWorker {
+    ResultSet produceResultSet() throws SQLException;
 
-    void consumerFromJdbc();
-
-    void retrieveSchema();
-
-    void hasFinishedWork();
+    boolean hasFinishedWork();
 
 }

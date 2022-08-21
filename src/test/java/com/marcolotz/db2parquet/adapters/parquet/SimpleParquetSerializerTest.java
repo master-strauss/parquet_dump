@@ -111,12 +111,12 @@ class SimpleParquetSerializerTest {
 
     @Test
     @DisplayName("Then avro should be correctly serialized")
-    public void testToFile(@TempDir java.nio.file.Path directory) throws IOException {
+    void writeToFile(@TempDir java.nio.file.Path directory) throws IOException {
         File tmpFile = new File(directory.toString() + "/" + TEMP_FILE_NAME);
         testToResultFile(tmpFile);
     }
 
-    protected void testToResultFile(File tempFile) throws IOException {
+    void testToResultFile(File tempFile) throws IOException {
 
         byte[] serializedParquet = parquetSerializer.convertToParquet(resultSet);
 
@@ -128,7 +128,7 @@ class SimpleParquetSerializerTest {
         validate(tempFile, ID_FIELD_NAME, ID_VALUES);
     }
 
-    public void validate(File file, String fieldName, Integer... expectedValues) throws IOException {
+    void validate(File file, String fieldName, Integer... expectedValues) throws IOException {
         Path path = new Path(file.toString());
         ParquetReader<GenericRecord> reader = AvroParquetReader.<GenericRecord>builder(path).build();
 
