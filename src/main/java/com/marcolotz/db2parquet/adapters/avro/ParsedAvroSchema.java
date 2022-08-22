@@ -9,7 +9,7 @@ import java.util.List;
  * and associated schema type.
  */
 @Data
-public class SchemaResults {
+public class ParsedAvroSchema {
 
     private Schema parsedSchema;
 

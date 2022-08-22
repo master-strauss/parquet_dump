@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Parses a {@link ResultSet } and generates {@link SchemaResults } which contains the mappings of sql columns
+ * Parses a {@link ResultSet } and generates {@link ParsedAvroSchema } which contains the mappings of sql columns
  * to Schema fields.
  */
 public class ResultSetSchemaGenerator {
@@ -24,9 +24,9 @@ public class ResultSetSchemaGenerator {
      * @return
      * @throws SQLException
      */
-    public SchemaResults generateSchema(ResultSet resultSet, String name, String nameSpace) throws SQLException {
+    public ParsedAvroSchema generateSchema(ResultSet resultSet, String name, String nameSpace) throws SQLException {
 
-        SchemaResults schemaResults = new SchemaResults();
+        ParsedAvroSchema schemaResults = new ParsedAvroSchema();
         List<SchemaSqlMapping> mappings = new LinkedList<>();
 
         Schema recordSchema = Schema.createRecord(name, null, nameSpace, false);
