@@ -25,7 +25,7 @@ public class SimpleParquetSerializer implements ParquetSerializer {
                 .withCompressionCodec(CompressionCodecName.SNAPPY)
                 .build();
 
-
+        // Note: Since this is an array, sometimes elements can be null. This iterator ignores them.
         for (GenericRecord record : avroRecords) {
             parquetWriter.write(record);
         }

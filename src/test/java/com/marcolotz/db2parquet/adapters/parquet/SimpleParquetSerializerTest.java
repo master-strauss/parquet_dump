@@ -1,5 +1,14 @@
 package com.marcolotz.db2parquet.adapters.parquet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
@@ -10,16 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("When converting a SQL table to Parquet")
 class SimpleParquetSerializerTest {
@@ -95,7 +94,7 @@ class SimpleParquetSerializerTest {
         fieldSchemas.add(intSchema);
         fieldSchemas.add(nullSchema);
 
-        Schema fieldSchema = recordSchema.createUnion(fieldSchemas);
+        Schema fieldSchema = Schema.createUnion(fieldSchemas);
 
         return new Schema.Field(columnName, fieldSchema, null, null);
     }
