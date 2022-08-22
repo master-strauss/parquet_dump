@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.parquet;
+package com.marcolotz.db2parquet.adapters.avro;
 
 import org.apache.avro.Schema;
 
@@ -26,7 +26,7 @@ public class ResultSetSchemaGenerator {
      */
     public ParsedAvroSchema generateSchema(ResultSet resultSet, String name, String nameSpace) throws SQLException {
 
-        ParsedAvroSchema schemaResults = new ParsedAvroSchema();
+
         List<SchemaSqlMapping> mappings = new LinkedList<>();
 
         Schema recordSchema = Schema.createRecord(name, null, nameSpace, false);
@@ -42,20 +42,17 @@ public class ResultSetSchemaGenerator {
 
                 String columnName = resultSetMetaData.getColumnName(x);
                 int sqlColumnType = resultSetMetaData.getColumnType(x);
-                String schemaName = columnName.toLowerCase();
+                String schemaColumnName = columnName.toLowerCase();
 
                 Schema.Type schemaType = parseSchemaType(sqlColumnType);
-                mappings.add(new SchemaSqlMapping(schemaName, columnName, sqlColumnType, schemaType));
-                fields.add(createNullableField(recordSchema, schemaName, schemaType));
+                mappings.add(new SchemaSqlMapping(schemaColumnName, columnName, sqlColumnType, schemaType));
+                fields.add(createNullableField(recordSchema, schemaColumnName, schemaType));
             }
         }
 
         recordSchema.setFields(fields);
 
-        schemaResults.setMappings(mappings);
-        schemaResults.setParsedSchema(recordSchema);
-
-        return schemaResults;
+        return new ParsedAvroSchema(recordSchema, mappings);
     }
 
     /**

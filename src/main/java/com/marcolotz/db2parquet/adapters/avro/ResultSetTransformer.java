@@ -1,26 +1,13 @@
-package com.marcolotz.db2parquet.adapters.parquet;
+package com.marcolotz.db2parquet.adapters.avro;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 /**
  * Transforms an SQL ResultSet into another format.
  */
 public interface ResultSetTransformer {
-
-    /**
-     * @param resultSet  The resultset to transform.
-     * @param schemaName Schema name.
-     * @param namespace  Schema namespace.
-     * @return InputStream containing the transformed data.
-     * @throws IOException
-     * @throws SQLException
-     */
-    InputStream transform(ResultSet resultSet, String schemaName, String namespace) throws IOException, SQLException;
 
 
     /**

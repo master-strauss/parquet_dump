@@ -1,17 +1,18 @@
-package com.marcolotz.db2parquet.adapters.parquet;
+package com.marcolotz.db2parquet.adapters.avro;
 
-import lombok.Data;
+import lombok.Value;
 import org.apache.avro.Schema;
+
 import java.util.List;
 
 /**
  * Contains both the {@link org.apache.avro.Schema } and the mapping between the sql column name and type,
  * and associated schema type.
  */
-@Data
+@Value
 public class ParsedAvroSchema {
 
-    private Schema parsedSchema;
+    Schema parsedSchema;
 
-    private List<SchemaSqlMapping> mappings;
+    List<SchemaSqlMapping> mappings;
 }

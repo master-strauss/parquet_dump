@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.core.interfaces;
+package com.marcolotz.db2parquet.port;
 
 import com.lmax.disruptor.EventHandler;
 

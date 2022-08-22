@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.parquet;
+package com.marcolotz.db2parquet.adapters.avro;
 
 import lombok.Getter;
 import lombok.Value;

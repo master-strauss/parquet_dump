@@ -1,10 +1,8 @@
 package com.marcolotz.db2parquet.port;
 
 import com.lmax.disruptor.RingBuffer;
-import com.marcolotz.db2parquet.core.events.ResultSetEvent;
 
-public interface JdbcProducer  {
+public interface JdbcProducer<OUTPUT_FORMAT> {
 
-    public Thread run();
-    void produce(final RingBuffer<ResultSetEvent> ringBuffer);
+    void produce(final RingBuffer<OUTPUT_FORMAT> ringBuffer);
 }
