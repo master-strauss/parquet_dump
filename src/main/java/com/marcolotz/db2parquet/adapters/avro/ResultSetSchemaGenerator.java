@@ -1,13 +1,12 @@
 package com.marcolotz.db2parquet.adapters.avro;
 
-import org.apache.avro.Schema;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.avro.Schema;
 
 /**
  * Parses a {@link ResultSet } and generates {@link ParsedAvroSchema } which contains the mappings of sql columns
@@ -140,7 +139,7 @@ public class ResultSetSchemaGenerator {
         fieldSchemas.add(intSchema);
         fieldSchemas.add(nullSchema);
 
-        Schema fieldSchema = recordSchema.createUnion(fieldSchemas);
+        Schema fieldSchema = Schema.createUnion(fieldSchemas);
 
         return new Schema.Field(columnName, fieldSchema, null, null);
     }

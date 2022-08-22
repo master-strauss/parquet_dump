@@ -1,19 +1,18 @@
 package com.marcolotz.db2parquet.adapters.aes128;
 
 import com.marcolotz.db2parquet.port.Encryptor;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 /***
  * Fastest AES-128 algorithm, according to:

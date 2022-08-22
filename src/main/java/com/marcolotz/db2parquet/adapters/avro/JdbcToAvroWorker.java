@@ -1,14 +1,13 @@
 package com.marcolotz.db2parquet.adapters.avro;
 
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.generic.GenericRecordBuilder;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
 
 @Log4j2
 public class JdbcToAvroWorker {

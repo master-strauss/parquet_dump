@@ -1,9 +1,8 @@
 package com.marcolotz.db2parquet.adapters.avro;
 
+import java.util.List;
 import lombok.Value;
 import org.apache.avro.Schema;
-
-import java.util.List;
 
 /**
  * Contains both the {@link org.apache.avro.Schema } and the mapping between the sql column name and type,

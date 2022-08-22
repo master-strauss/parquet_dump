@@ -1,14 +1,13 @@
 package com.marcolotz.db2parquet.adapters;
 
 import com.marcolotz.db2parquet.port.DiskWriter;
-import lombok.SneakyThrows;
-
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import lombok.SneakyThrows;
 
 public class NioDiskWriter implements DiskWriter {
 

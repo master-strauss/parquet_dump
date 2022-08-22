@@ -1,7 +1,6 @@
 package com.marcolotz.db2parquet.adapters.aes128;
 
 import at.favre.lib.crypto.HKDF;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
