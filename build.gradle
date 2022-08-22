@@ -27,6 +27,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Configuration Validation:
+    implementation 'javax.validation:validation-api'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     compileOnly 'org.projectlombok:lombok'
     //runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
     annotationProcessor 'org.projectlombok:lombok'
@@ -43,10 +47,10 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations:2.2.2'
 
     // Apache Parquet related:
-    implementation  group: 'org.apache.parquet', name: 'parquet-avro', version: '1.12.3'
-    implementation  group: 'org.apache.parquet', name: 'parquet-hadoop', version: '1.12.3'
-    implementation  group: 'org.apache.hadoop', name: 'hadoop-common', version: '2.10.2'
-    implementation  group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: '2.10.2'
+    implementation group: 'org.apache.parquet', name: 'parquet-avro', version: '1.12.3'
+    implementation group: 'org.apache.parquet', name: 'parquet-hadoop', version: '1.12.3'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-common', version: '2.10.2'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: '2.10.2'
 
     // Encryption:
     implementation 'at.favre.lib:hkdf:1.0.2'
@@ -62,8 +66,8 @@ dependencies {
 
 // Fix to have only log4j2 installed
 configurations {
-    all*.exclude module : 'spring-boot-starter-logging'
-    all*.exclude module : 'slf4j-reload4j'
+    all*.exclude module: 'spring-boot-starter-logging'
+    all*.exclude module: 'slf4j-reload4j'
 }
 
 tasks.named('test') {
