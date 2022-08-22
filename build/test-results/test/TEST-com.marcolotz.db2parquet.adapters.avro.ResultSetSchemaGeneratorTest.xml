@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="When converting JDBC to Avro schemas" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-22T11:02:46" hostname="Marcos-MacBook-Pro.local" time="1.052">
+  <properties/>
+  <testcase name="Then the schema is correctly converted" classname="com.marcolotz.db2parquet.adapters.avro.ResultSetSchemaGeneratorTest" time="1.052"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
