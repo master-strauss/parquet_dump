@@ -5,7 +5,7 @@ spring:
 db2parquet:
   number-of-concurrent-syncs: 1
   jdbc:
-    url: testurl  # todo
+    url: jdbc:h2:~/testdb
     driver-class: org.h2.Driver  # H2 jdbc driver
     username: testUser
     password: 123456
