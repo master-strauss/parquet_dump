@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="When using AES128 GCM" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-22T11:02:46" hostname="Marcos-MacBook-Pro.local" time="0.019">
-  <properties/>
-  <testcase name="Then the encryption should AES 128 GCM and should be possible to decrypt" classname="com.marcolotz.db2parquet.adapters.aes128.Aes128EncryptorTest" time="0.019"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
