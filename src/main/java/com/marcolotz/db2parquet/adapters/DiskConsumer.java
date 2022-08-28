@@ -3,12 +3,11 @@ package com.marcolotz.db2parquet.adapters;
 import com.lmax.disruptor.EventHandler;
 import com.marcolotz.db2parquet.core.events.EncryptedByteSequenceEvent;
 import com.marcolotz.db2parquet.core.events.FileData;
-import com.marcolotz.db2parquet.core.interfaces.EventConsumer;
 import com.marcolotz.db2parquet.port.DiskWriter;
+import com.marcolotz.db2parquet.port.EventConsumer;
+import java.util.List;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.List;
 
 @Log4j2
 @Data

@@ -1,9 +1,8 @@
 package com.marcolotz.db2parquet.core.events;
 
 import com.lmax.disruptor.EventFactory;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class EncryptedByteSequenceEvent {

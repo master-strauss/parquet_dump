@@ -1,24 +1,23 @@
 package com.marcolotz.db2parquet.adapters;
 
 import com.lmax.disruptor.RingBuffer;
-import com.marcolotz.db2parquet.core.events.ResultSetEvent;
-import com.marcolotz.db2parquet.core.interfaces.JdbcWorker;
+import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
+import com.marcolotz.db2parquet.adapters.avro.ParsedAvroSchema;
+import com.marcolotz.db2parquet.core.events.AvroResultSetEvent;
 import com.marcolotz.db2parquet.port.JdbcProducer;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.log4j.Log4j2;
-
-import java.sql.ResultSet;
+import org.apache.avro.generic.GenericRecord;
 
 @Value
 @Log4j2
-public class BaseJdbcImplementation implements JdbcProducer {
+public class BaseJdbcImplementation implements JdbcProducer<AvroResultSetEvent> {
 
-    JdbcWorker jdbcWorker;
+    JdbcToAvroWorker jdbcWorker;
 
-    RingBuffer<ResultSetEvent> ringBuffer;
+    RingBuffer<AvroResultSetEvent> ringBuffer;
 
-    @Override
     public Thread run() {
         final Runnable producer = () -> produce(ringBuffer);
         Thread thread = new Thread(producer);
@@ -28,16 +27,18 @@ public class BaseJdbcImplementation implements JdbcProducer {
 
     @Override
     @SneakyThrows
-    public void produce(RingBuffer<ResultSetEvent> ringBuffer) {
-        log.info(() -> "Setting up JDBC connection");
+    public void produce(final RingBuffer<AvroResultSetEvent> ringBuffer){
+        log.info(() -> "Starting JDBC producer");
         while (!jdbcWorker.hasFinishedWork())
         {
             // Loads Data into a chunk
-            ResultSet resultSet = jdbcWorker.produceResultSet();
+            GenericRecord[] records = jdbcWorker.produceAvroRecords();
+            ParsedAvroSchema parsedAvroSchema = jdbcWorker.getAvroSchema();
             // Write to ring buffer
             final long seq = ringBuffer.next();
-            final ResultSetEvent resultSetEvent = ringBuffer.get(seq);
-            resultSetEvent.setResultSet(resultSet);
+            final AvroResultSetEvent resultSetEvent = ringBuffer.get(seq);
+            resultSetEvent.setAvroSchema(parsedAvroSchema.getParsedSchema());
+            resultSetEvent.setAvroRecords(records);
             ringBuffer.publish(seq);
         }
         log.info(() -> "JDBC worker finished consuming data");

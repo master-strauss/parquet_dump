@@ -1,9 +1,10 @@
 package com.marcolotz.db2parquet.port;
 
-import java.sql.ResultSet;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecord;
 
 public interface ParquetSerializer {
 
-    byte[] convertToParquet(ResultSet resultSet);
+    byte[] convertToParquet(Schema avroSchema, GenericRecord[] avroRecords);
 
 }

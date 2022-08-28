@@ -1,7 +1,17 @@
 package com.marcolotz.db2parquet.adapters.parquet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.avro.AvroParquetReader;
 import org.apache.parquet.hadoop.ParquetReader;
@@ -10,102 +20,31 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 @DisplayName("When converting a SQL table to Parquet")
 class SimpleParquetSerializerTest {
     protected static final String ID_FIELD_NAME = "id";
     protected static final String TEMP_FILE_NAME = "unit_test.tmp";
-    protected static final String SCHEMA_NAME = "SchemaName";
-    protected static final String NAMESPACE = "org.NAMESPACE";
+    protected static final String SCHEMA_NAME = "test_schema";
+    protected static final String SCHEMA_NAMESPACE = "com.marcolotz";
     protected static final Integer[] ID_VALUES = {0, 1, 2, 3, 4, 5, 6};
+    protected final SimpleParquetSerializer parquetSerializer = new SimpleParquetSerializer();
 
-    protected ResultSet resultSet = mock(ResultSet.class);
-    protected ResultSetMetaData metaData = mock(ResultSetMetaData.class);
-
-    SimpleParquetSerializer parquetSerializer;
+    protected Schema schema;
+    protected GenericRecord[] records;
 
     @BeforeEach
-    public void before() throws Exception {
+    public void before() {
 
-        Boolean[] nextReturns = new Boolean[ID_VALUES.length + 1];
-        Arrays.fill(nextReturns, Boolean.TRUE);
-        nextReturns[nextReturns.length - 1] = false; // set last value to false
+        schema = Schema.createRecord(SCHEMA_NAME, null, SCHEMA_NAMESPACE, false);
+        List<Schema.Field> fields = new LinkedList<>();
 
-        when(resultSet.next()).thenReturn(nextReturns[0], Arrays.copyOfRange(nextReturns, 1, nextReturns.length));
-        when(resultSet.getInt(ID_FIELD_NAME)).thenReturn(ID_VALUES[0], Arrays.copyOfRange(ID_VALUES, 1, ID_VALUES.length));
-        when(resultSet.getMetaData()).thenReturn(metaData);
+        // Prepare Avro Schema
+        Schema.Type columnType = Schema.Type.INT;
+        fields.add(createNullableField(schema, ID_FIELD_NAME, columnType));
+        schema.setFields(fields);
 
-        // mock metadata so schema is created
-        when(metaData.getColumnCount()).thenReturn(1);
-        when(metaData.getColumnName(1)).thenReturn(ID_FIELD_NAME);
-        when(metaData.getColumnType(1)).thenReturn(Types.INTEGER);
-
-        parquetSerializer = new SimpleParquetSerializer(SCHEMA_NAME, NAMESPACE);
-    }
-
-    @Test
-    @DisplayName("Then the schema is correctly converted")
-    public void testGenerateSchema() throws SQLException {
-
-        String schemaName = "SchemaName";
-        String namespace = "org.namespace";
-
-        ResultSetSchemaGenerator generator = new ResultSetSchemaGenerator();
-
-        ResultSet resultSet = mock(ResultSet.class);
-        ResultSetMetaData metaData = mock(ResultSetMetaData.class);
-        when(resultSet.getMetaData()).thenReturn(metaData);
-
-        // mock metadata so schema is created
-        when(metaData.getColumnCount()).thenReturn(4);
-        when(metaData.getColumnName(1)).thenReturn("id");
-        when(metaData.getColumnType(1)).thenReturn(Types.INTEGER);
-
-        when(metaData.getColumnName(2)).thenReturn("name");
-        when(metaData.getColumnType(2)).thenReturn(Types.VARCHAR);
-
-        when(metaData.getColumnName(3)).thenReturn("timestamp");
-        when(metaData.getColumnType(3)).thenReturn(Types.TIMESTAMP);
-
-        when(metaData.getColumnName(4)).thenReturn("double");
-        when(metaData.getColumnType(4)).thenReturn(Types.DOUBLE);
-
-        SchemaResults schemaResults = generator.generateSchema(resultSet, schemaName, namespace);
-
-        List<SchemaSqlMapping> mappings = schemaResults.getMappings();
-
-        // Number of colums must match
-        assertEquals(4, mappings.size());
-
-        assertEquals("id", mappings.get(0).getSqlColumnName());
-        assertEquals(Types.INTEGER, mappings.get(0).getSqlType());
-        assertEquals(Schema.Type.INT, mappings.get(0).getSchemaType());
-
-        assertEquals("name", mappings.get(1).getSqlColumnName());
-        assertEquals(Types.VARCHAR, mappings.get(1).getSqlType());
-        assertEquals(Schema.Type.STRING, mappings.get(1).getSchemaType());
-
-        assertEquals("timestamp", mappings.get(2).getSqlColumnName());
-        assertEquals(Types.TIMESTAMP, mappings.get(2).getSqlType());
-        assertEquals(Schema.Type.LONG, mappings.get(2).getSchemaType());
-
-        assertEquals("double", mappings.get(3).getSqlColumnName());
-        assertEquals(Types.DOUBLE, mappings.get(3).getSqlType());
-        assertEquals(Schema.Type.DOUBLE, mappings.get(3).getSchemaType());
+        // Translate into records
+        records = convertToGenericRecordOfIds(ID_VALUES, schema);
 
     }
 
@@ -118,7 +57,7 @@ class SimpleParquetSerializerTest {
 
     void testToResultFile(File tempFile) throws IOException {
 
-        byte[] serializedParquet = parquetSerializer.convertToParquet(resultSet);
+        byte[] serializedParquet = parquetSerializer.convertToParquet(schema, records);
 
         // dump serialization to fs:
         try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
@@ -144,6 +83,26 @@ class SimpleParquetSerializerTest {
         assertTrue(recordsRead);
 
         reader.close();
+    }
+
+    private Schema.Field createNullableField(Schema recordSchema, String columnName, Schema.Type type) {
+
+        Schema intSchema = Schema.create(type);
+        Schema nullSchema = Schema.create(Schema.Type.NULL);
+
+        List<Schema> fieldSchemas = new LinkedList<>();
+        fieldSchemas.add(intSchema);
+        fieldSchemas.add(nullSchema);
+
+        Schema fieldSchema = Schema.createUnion(fieldSchemas);
+
+        return new Schema.Field(columnName, fieldSchema, null, null);
+    }
+
+    private GenericRecord[] convertToGenericRecordOfIds(Integer[] idValue, Schema schema) {
+        GenericRecordBuilder builder = new GenericRecordBuilder(schema);
+
+        return Arrays.stream(idValue).map(id -> builder.set(schema.getField(ID_FIELD_NAME), id).build()).toArray(GenericRecord[]::new);
     }
 
 }

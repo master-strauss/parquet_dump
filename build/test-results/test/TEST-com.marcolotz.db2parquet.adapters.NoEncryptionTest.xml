@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="When using not encryption" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-22T11:02:46" hostname="Marcos-MacBook-Pro.local" time="0.001">
+  <properties/>
+  <testcase name="Then the encryption should be an identity mapping" classname="com.marcolotz.db2parquet.adapters.NoEncryptionTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,10 +1,10 @@
 package com.marcolotz.db2parquet.adapters.aes128;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("When using AES128 GCM")
 class Aes128EncryptorTest {

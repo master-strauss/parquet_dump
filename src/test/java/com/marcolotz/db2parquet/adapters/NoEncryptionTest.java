@@ -1,12 +1,11 @@
 package com.marcolotz.db2parquet.adapters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.marcolotz.db2parquet.port.Encryptor;
+import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("When using not encryption")
 class NoEncryptionTest {

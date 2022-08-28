@@ -5,12 +5,11 @@ import com.lmax.disruptor.RingBuffer;
 import com.marcolotz.db2parquet.core.events.EncryptedByteSequenceEvent;
 import com.marcolotz.db2parquet.core.events.FileData;
 import com.marcolotz.db2parquet.core.events.ParquetByteSequenceEvent;
-import com.marcolotz.db2parquet.core.interfaces.EventConsumer;
 import com.marcolotz.db2parquet.port.Encryptor;
+import com.marcolotz.db2parquet.port.EventConsumer;
+import java.util.List;
 import lombok.Value;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.List;
 
 @Value
 @Log4j2

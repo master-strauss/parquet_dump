@@ -1,11 +1,10 @@
 package com.marcolotz.db2parquet.adapters.parquet;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import org.apache.parquet.io.DelegatingPositionOutputStream;
 import org.apache.parquet.io.OutputFile;
 import org.apache.parquet.io.PositionOutputStream;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 
 /***
  * Avro to Parquet is designed to write to FS instead of in-memory - this implementation forces a serialization
