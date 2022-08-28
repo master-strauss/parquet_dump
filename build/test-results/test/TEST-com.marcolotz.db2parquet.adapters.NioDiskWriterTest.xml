@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="When writing to a file" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-22T11:02:46" hostname="Marcos-MacBook-Pro.local" time="0.064">
-  <properties/>
-  <testcase name="then the data should be written to a file" classname="com.marcolotz.db2parquet.adapters.NioDiskWriterTest" time="0.064"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
