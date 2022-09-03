@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import lombok.SneakyThrows;
 
+/***
+ * This class is thread safe
+ */
 public class NioDiskWriter implements DiskWriter {
 
     @Override

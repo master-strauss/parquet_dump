@@ -1,6 +1,7 @@
 package com.marcolotz.db2parquet.config;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
@@ -11,6 +12,8 @@ public class Db2ParquetConfigurationProperties {
   @Min(1)
   private int numberOfConcurrentSyncs;
   private JdbcConfigurationProperties   jdbc;
+  @NotEmpty
+  private String outputPath;
 
   @Data
   public static class JdbcConfigurationProperties{

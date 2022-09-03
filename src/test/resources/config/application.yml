@@ -4,6 +4,8 @@ spring:
 
 db2parquet:
   number-of-concurrent-syncs: 1
+  output-path: None
+  encryption-key: ThisIsNotAKey # Replace
   jdbc:
     url: jdbc:h2:~/testdb
     driver-class: org.h2.Driver  # H2 jdbc driver

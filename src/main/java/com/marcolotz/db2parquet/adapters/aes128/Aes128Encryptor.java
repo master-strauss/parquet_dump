@@ -23,6 +23,8 @@ import lombok.extern.log4j.Log4j2;
  *
  * The bottleneck of the data transformation should be in the database Network side and not on CPU usage
  * from encryption.
+ *
+ * This class is thread-safe
  */
 @Log4j2
 public class Aes128Encryptor implements Encryptor {

@@ -6,6 +6,8 @@ server:
 
 db2parquet:
   number-of-concurrent-syncs: 1
+  output-path: /dev/null # Replace
+  encryption-key: ThisIsNotAKey # Replace
   jdbc:
     url: jdbc:oracle:thin:@192.168.100.1:5521/mydbservice?oracle.net.httpsProxyHost=myproxy&oracle.net.httpsProxyPort=80  # Replace
     driver-class: oracle.jdbc.driver.OracleDriver

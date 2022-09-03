@@ -2,21 +2,35 @@ package com.marcolotz.db2parquet.adapters;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.dsl.Disruptor;
 import com.marcolotz.db2parquet.core.events.EncryptedByteSequenceEvent;
 import com.marcolotz.db2parquet.core.events.FileData;
 import com.marcolotz.db2parquet.core.events.ParquetByteSequenceEvent;
 import com.marcolotz.db2parquet.port.Encryptor;
 import com.marcolotz.db2parquet.port.EventConsumer;
-import java.util.List;
-import lombok.Value;
+import com.marcolotz.db2parquet.port.EventProducer;
 import lombok.extern.log4j.Log4j2;
 
-@Value
 @Log4j2
-public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceEvent> {
+public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceEvent>,
+  EventProducer<FileData> {
 
-    RingBuffer<EncryptedByteSequenceEvent> outputRingBuffer;
-    Encryptor encryptor;
+    private final Encryptor encryptor;
+    private final Disruptor<EncryptedByteSequenceEvent> outputDisruptor;
+    final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor;
+
+    public EncryptionTransformer(final Encryptor encryptor, final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor, final Disruptor<EncryptedByteSequenceEvent> outputDisruptor)
+    {
+        this.encryptor = encryptor;
+        this.outputDisruptor = outputDisruptor;
+        this.inputboundDisruptor = inputboundDisruptor;
+        inputboundDisruptor.handleEventsWith(getEventHandler());
+    }
+
+    private FileData toEncryptedFile(final FileData notEncryptedFile)
+    {
+        return new FileData(notEncryptedFile.getFileName(), encryptor.encrypt(notEncryptedFile.getContents()));
+    }
 
     public EventHandler<ParquetByteSequenceEvent>[] getEventHandler() {
         EventHandler<ParquetByteSequenceEvent> eventHandler
@@ -27,20 +41,26 @@ public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceE
 
     private void processEvent(ParquetByteSequenceEvent event, long sequence) {
         log.debug(() -> "Starting encryption of message with sequence number: " + sequence);
-        List<FileData> encryptedFileData = encrypt(event.getParquetFiles());
-
-        final long seq = outputRingBuffer.next();
-        final EncryptedByteSequenceEvent encryptEvent = outputRingBuffer.get(seq);
-        encryptEvent.setEncryptedData(encryptedFileData);
-        outputRingBuffer.publish(seq);
-
+        FileData encryptedFileData = encrypt(event.getParquetFile());
+        produce(encryptedFileData);
         log.debug(() -> "Finished encryption of message with sequence number: " + sequence);
     }
 
-    private List<FileData> encrypt(List<FileData> fileDataToEncrypt)
+    private FileData encrypt(FileData fileDataToEncrypt)
     {
-        // TODO
-        //event.getParquetFiles().stream().map(e -> new EncryptedByteSequenceEvent(e.getContents())).collect(Collectors.toList());
-        return fileDataToEncrypt;
+        return toEncryptedFile((fileDataToEncrypt));
+    }
+
+    @Override
+    public void produce(FileData encryptedFileData) {
+        final RingBuffer<EncryptedByteSequenceEvent> ringBuffer = outputDisruptor.getRingBuffer();
+        final long seq = ringBuffer.next();
+        final EncryptedByteSequenceEvent encryptEvent = ringBuffer.get(seq);
+        encryptEvent.setEncryptedData(encryptedFileData);
+        ringBuffer.publish(seq);
+    }
+
+    public boolean finishedProcessingAllMessages() {
+        return inputboundDisruptor.getRingBuffer().getCursor() == outputDisruptor.getRingBuffer().getCursor();
     }
 }
