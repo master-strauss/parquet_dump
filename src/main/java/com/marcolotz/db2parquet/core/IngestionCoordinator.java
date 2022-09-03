@@ -18,7 +18,7 @@ public class IngestionCoordinator {
   Db2ParquetConfigurationProperties configurationProperties;
   DataSource dataSource;
   // TODO: Change to factories
-  JdbcToAvroWorker.JdbcToAvroWorkerBuilder jdbcToAvroWorkerBuilder;
+  JdbcToAvroWorker jdbcToAvroWorker;
   ParquetSerializer parquetSerializer;
   Encryptor encryptor;
   DiskWriter diskWriter;
@@ -31,7 +31,7 @@ public class IngestionCoordinator {
     {
       // Note all the based configuration of the builder is already provided on the creation of
       // the bean
-      final JdbcToAvroWorker jdbcToAvroWorker = jdbcToAvroWorkerBuilder.build();
+//      final JdbcToAvroWorker jdbcToAvroWorker = jdbcToAvroWorkerBuilder.build();
       final TaskSequence taskSequence = new TaskSequence(jdbcToAvroWorker, parquetSerializer, encryptor, diskWriter);
       taskSequences.add(taskSequence);
     }

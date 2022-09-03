@@ -4,14 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
 
 @Log4j2
-@Builder
 public class JdbcToAvroWorker {
 
     private final int numberOfRowsToFetch;

@@ -1,8 +1,13 @@
 package com.marcolotz.db2parquet.config;
 
+import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
 import com.marcolotz.db2parquet.core.BaseIngestionService;
 import com.marcolotz.db2parquet.core.IngestionCoordinator;
+import com.marcolotz.db2parquet.port.DiskWriter;
+import com.marcolotz.db2parquet.port.Encryptor;
 import com.marcolotz.db2parquet.port.IngestionService;
+import com.marcolotz.db2parquet.port.ParquetSerializer;
+import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,15 +19,19 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class AdaptersConfig {
 
   @Bean
-  public IngestionService ingestionService(final IngestionCoordinator ingestionCoordinator)
+  public IngestionService ingestionService(){//final IngestionCoordinator ingestionCoordinator)
   {
-    return new BaseIngestionService(ingestionCoordinator);
+    // TODO: Fix
+  }
+    return new BaseIngestionService(null);//ingestionCoordinator);
   }
 
-  @Bean IngestionCoordinator ingestionCoordinator(final Db2ParquetConfigurationProperties configurationProperties)
-  {
-    return new IngestionCoordinator(null, configurationProperties);
-  }
+  // TODO: Create Beans
+//  @Bean IngestionCoordinator ingestionCoordinator( final Db2ParquetConfigurationProperties configurationProperties,
+//  final DataSource dataSource, final JdbcToAvroWorker jdbcToAvroWorker, final ParquetSerializer parquetSerializer, final Encryptor encryptor, final DiskWriter diskWriter)
+//  {
+//    return new IngestionCoordinator(configurationProperties, dataSource, jdbcToAvroWorker, parquetSerializer,encryptor, diskWriter);
+//  }
 
   @Bean
   @ConfigurationProperties(prefix = "db2parquet")
