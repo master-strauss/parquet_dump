@@ -18,7 +18,7 @@ public class JdbcToAvroWorker {
   private final ParsedAvroSchema avroSchema;
   private boolean isFinished = false;
 
-  public JdbcToAvroWorker(final Connection dbConnection, final String query,
+  JdbcToAvroWorker(final Connection dbConnection, final String query,
     final int numberOfRowsToFetch, final String schemaName, final String namespace)
     throws SQLException {
     this.numberOfRowsToFetch = numberOfRowsToFetch;

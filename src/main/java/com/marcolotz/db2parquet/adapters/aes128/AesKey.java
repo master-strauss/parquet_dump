@@ -17,8 +17,7 @@ public class AesKey {
   private static final byte[] AUTH_KEY_META = "authKey".getBytes(StandardCharsets.UTF_8);
 
   /**
-   * Important: Do not use with a weak key like a user password, use
-   * {@link #deriveHmac256FromPass(byte[], byte[])}
+   * Important: Do not use with a weak key like a user password, use {@link #deriveHmac256FromPass(byte[], byte[])}
    *
    * @param randomKey must be an already good pseudo random key
    * @return 64 byte expanded key

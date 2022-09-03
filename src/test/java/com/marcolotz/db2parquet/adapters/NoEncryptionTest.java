@@ -7,12 +7,12 @@ import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("When using not encryption")
+@DisplayName( "When using not encryption" )
 class NoEncryptionTest {
 
   Encryptor encryption = new NoEncryption();
 
-  @DisplayName("Then the encryption should be an identity mapping")
+  @DisplayName( "Then the encryption should be an identity mapping" )
   @Test
   void whenEncrypting_thenReturnsInput() {
     // Given

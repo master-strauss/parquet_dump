@@ -22,8 +22,6 @@ import lombok.SneakyThrows;
 
 public class TaskSequence {
 
-  private static final String SCHEMA_NAME = "db2parquet";
-  private static final String NAMESPACE = "com.marcolotz";
   private final JdbcProducer jdbcProducer;
   private final ParquetTransformer parquetTransformer;
   private final EncryptionTransformer encryptorTransformer;

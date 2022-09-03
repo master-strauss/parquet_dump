@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("When using AES128 GCM")
+@DisplayName( "When using AES128 GCM" )
 class Aes128EncryptorTest {
 
   static String message = "You're tuned to Dawn FM\n" +
@@ -54,7 +54,7 @@ class Aes128EncryptorTest {
     "May peace be with you";
   Aes128Encryptor encryption = new Aes128Encryptor("ThisIsAnEncryptionKey".getBytes());
 
-  @DisplayName("Then the encryption should AES 128 GCM and should be possible to decrypt")
+  @DisplayName( "Then the encryption should AES 128 GCM and should be possible to decrypt" )
   @Test
   void whenEncrypting_thenReturnsEncryptedOutput() {
     // Given

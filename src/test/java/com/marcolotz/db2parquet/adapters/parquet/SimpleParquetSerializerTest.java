@@ -20,7 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@DisplayName("When converting a SQL table to Parquet")
+@DisplayName( "When converting a SQL table to Parquet" )
 class SimpleParquetSerializerTest {
 
   protected static final String ID_FIELD_NAME = "id";
@@ -50,7 +50,7 @@ class SimpleParquetSerializerTest {
   }
 
   @Test
-  @DisplayName("Then avro should be correctly serialized")
+  @DisplayName( "Then avro should be correctly serialized" )
   void writeToFile(@TempDir java.nio.file.Path directory) throws IOException {
     File tmpFile = new File(directory.toString() + "/" + TEMP_FILE_NAME);
     testToResultFile(tmpFile);

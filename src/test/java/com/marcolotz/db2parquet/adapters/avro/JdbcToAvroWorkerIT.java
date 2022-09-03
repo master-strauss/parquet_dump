@@ -1,9 +1,8 @@
-package com.marcolotz.db2parquet.adapters;
+package com.marcolotz.db2parquet.adapters.avro;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 
 @SpringBootTest
-@DisplayName("When converting JDBC information to Avro...")
+@DisplayName( "When converting JDBC information to Avro..." )
 class JdbcToAvroWorkerIT {
 
   private static final String QUERY = "SELECT * FROM owners";
@@ -64,7 +63,7 @@ class JdbcToAvroWorkerIT {
   }
 
   @Test
-  @DisplayName("then Sql schema is correctly mapped to avro schemas")
+  @DisplayName( "then Sql schema is correctly mapped to avro schemas" )
   void whenRetrievingJdbcSchema_thenItIsCorrectlyMappedToAvro() throws SQLException {
     // Given
     final int numberOfRowsToFetch = 2;
@@ -82,7 +81,7 @@ class JdbcToAvroWorkerIT {
   }
 
   @Test
-  @DisplayName("Then SQL rows are correctly translated to SQL entries")
+  @DisplayName( "Then SQL rows are correctly translated to SQL entries" )
   void whenRetrievingJdbcRecords_thenTheyAreCorrectlyMappedToAvro() throws SQLException {
     // Given
     int expectedCount = 10;  // From test_entries script
@@ -106,7 +105,7 @@ class JdbcToAvroWorkerIT {
   }
 
   @Test
-  @DisplayName("Then it will try fetching only the specified number of rows")
+  @DisplayName( "Then it will try fetching only the specified number of rows" )
     // Note: Not all DBs accept fetchSize parameters the same way. It seems that MySQL ignores it.
   void whenRetrievingJdbcRecords_thenItTriesToLimitFetchSize() throws SQLException {
     // Given

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-@DisplayName("When writing to a file")
+@DisplayName( "When writing to a file" )
 class NioDiskWriterTest {
 
   @TempDir
@@ -19,7 +19,7 @@ class NioDiskWriterTest {
   DiskWriter diskWriter = new NioDiskWriter();
 
   @Test
-  @DisplayName("then the data should be written to a file")
+  @DisplayName( "then the data should be written to a file" )
   void whenWritingToAFile_thenContentsShouldBePersisted() throws IOException {
     // Given
     final String test = "thisIs_aTest_String";

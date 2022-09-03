@@ -2,7 +2,7 @@ package com.marcolotz.db2parquet.adapters.avro;
 
 import org.junit.jupiter.api.DisplayName;
 
-@DisplayName("When loading data from JDBC")
+@DisplayName( "When loading data from JDBC" )
 class JdbcToAvroWorkerTest {
 //
 //    protected static final String ID_FIELD_NAME = "id";

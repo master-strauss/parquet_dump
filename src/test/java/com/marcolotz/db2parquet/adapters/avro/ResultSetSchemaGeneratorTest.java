@@ -13,11 +13,11 @@ import org.apache.avro.Schema;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("When converting JDBC to Avro schemas")
+@DisplayName( "When converting JDBC to Avro schemas" )
 class ResultSetSchemaGeneratorTest {
 
   @Test
-  @DisplayName("Then the schema is correctly converted")
+  @DisplayName( "Then the schema is correctly converted" )
   public void testGenerateSchema() throws SQLException {
 
     String schemaName = "SchemaName";

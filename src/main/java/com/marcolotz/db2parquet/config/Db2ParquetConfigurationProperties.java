@@ -9,11 +9,23 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class Db2ParquetConfigurationProperties {
 
-  @Min(1)
+  @Min( 1 )
   private int numberOfConcurrentSyncs;
   private JdbcConfigurationProperties jdbc;
   @NotEmpty
   private String outputPath;
+  @NotEmpty
+  private String encryptionKey;
+
+  @NotEmpty
+  private String queryTemplate;
+  @NotEmpty
+  private String schemaName;
+  @NotEmpty
+  private String namespace;
+  @Min( 1 )
+  private int numberOfRowsToFetch;
+
 
   @Data
   public static class JdbcConfigurationProperties {
@@ -24,10 +36,10 @@ public class Db2ParquetConfigurationProperties {
     private String password;
     private String outputType;
 
-    @Min(10)
+    @Min( 10 )
     private int fetchSizeInRows;
     // Minimum 100 MB - currently not being used
-    @Min(104857600)
+    @Min( 104857600 )
     private long maxFileSizeInBytes;
   }
 }

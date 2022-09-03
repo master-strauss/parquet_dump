@@ -17,6 +17,9 @@ import org.apache.avro.generic.GenericRecord;
 @Log4j2
 public class JdbcProducer implements EventProducer<GenericRecord[]> {
 
+  // TODO: Maybe this should be a configuration?
+  private static final String SCHEMA_NAME = "db2parquet";
+  private static final String NAMESPACE = "com.marcolotz";
   private final JdbcToAvroWorker jdbcWorker;
   private final Disruptor<AvroResultSetEvent> disruptor;
   private Thread runningThread;

@@ -9,8 +9,8 @@ import java.util.List;
 import org.apache.avro.Schema;
 
 /**
- * Parses a {@link ResultSet } and generates {@link ParsedAvroSchema } which contains the mappings
- * of sql columns to Schema fields.
+ * Parses a {@link ResultSet } and generates {@link ParsedAvroSchema } which contains the mappings of sql columns to
+ * Schema fields.
  */
 public class ResultSetSchemaGenerator {
 
@@ -55,8 +55,7 @@ public class ResultSetSchemaGenerator {
   }
 
   /**
-   * Converts sql column type to schema type. See {@link java.sql.Types } and {@link Schema.Type }
-   * for more details.
+   * Converts sql column type to schema type. See {@link java.sql.Types } and {@link Schema.Type } for more details.
    * <p>
    * https://www.cis.upenn.edu/~bcpierce/courses/629/jdkdocs/guide/jdbc/getstart/mapping.doc.html
    *
