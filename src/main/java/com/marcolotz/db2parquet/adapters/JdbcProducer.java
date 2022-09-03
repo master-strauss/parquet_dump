@@ -17,56 +17,54 @@ import org.apache.avro.generic.GenericRecord;
 @Log4j2
 public class JdbcProducer implements EventProducer<GenericRecord[]> {
 
-    private final JdbcToAvroWorker jdbcWorker;
-    private final Disruptor<AvroResultSetEvent> disruptor;
-    private Thread runningThread;
+  private final JdbcToAvroWorker jdbcWorker;
+  private final Disruptor<AvroResultSetEvent> disruptor;
+  private Thread runningThread;
 
-    public JdbcProducer(JdbcToAvroWorker jdbcWorker, Disruptor<AvroResultSetEvent> disruptor) {
-        this.jdbcWorker = jdbcWorker;
-        this.disruptor = disruptor;
-    }
+  public JdbcProducer(JdbcToAvroWorker jdbcWorker, Disruptor<AvroResultSetEvent> disruptor) {
+    this.jdbcWorker = jdbcWorker;
+    this.disruptor = disruptor;
+  }
 
-    @SneakyThrows
-    // Just to avoid race conditions while creating the thread, probably better implementations
-    // can be done here, but the overall overhead is low.
-    @Synchronized
-    public void run() {
-        log.info(() -> "Starting JDBC producer");
-        // TODO: Fix this syntax
-        final Runnable producer = () -> {
-            try {
-                produce(jdbcWorker.produceAvroRecords());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        Thread thread = new Thread(producer);
-        thread.start();
-        log.info(() -> "JDBC producer running");
-        runningThread = thread;
-    }
+  @SneakyThrows
+  // Just to avoid race conditions while creating the thread, probably better implementations
+  // can be done here, but the overall overhead is low.
+  @Synchronized
+  public void run() {
+    log.info(() -> "Starting JDBC producer");
+    // TODO: Fix this syntax
+    final Runnable producer = () -> {
+      try {
+        produce(jdbcWorker.produceAvroRecords());
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    };
+    Thread thread = new Thread(producer);
+    thread.start();
+    log.info(() -> "JDBC producer running");
+    runningThread = thread;
+  }
 
-    @Override
-    @SneakyThrows
-    public void produce(GenericRecord[] event) {
-        final RingBuffer<AvroResultSetEvent> ringBuffer = disruptor.getRingBuffer();
-        while (!jdbcWorker.hasFinishedWork())
-        {
-            // Loads Data into a chunk
-            GenericRecord[] records = jdbcWorker.produceAvroRecords();
-            ParsedAvroSchema parsedAvroSchema = jdbcWorker.getAvroSchema();
-            // Write to ring buffer
-            final long seq = ringBuffer.next();
-            final AvroResultSetEvent resultSetEvent = ringBuffer.get(seq);
-            resultSetEvent.setAvroSchema(parsedAvroSchema.getParsedSchema());
-            resultSetEvent.setAvroRecords(records);
-            ringBuffer.publish(seq);
-        }
-        log.info(() -> "JDBC worker finished consuming data");
+  @Override
+  @SneakyThrows
+  public void produce(GenericRecord[] event) {
+    final RingBuffer<AvroResultSetEvent> ringBuffer = disruptor.getRingBuffer();
+    while (!jdbcWorker.hasFinishedWork()) {
+      // Loads Data into a chunk
+      GenericRecord[] records = jdbcWorker.produceAvroRecords();
+      ParsedAvroSchema parsedAvroSchema = jdbcWorker.getAvroSchema();
+      // Write to ring buffer
+      final long seq = ringBuffer.next();
+      final AvroResultSetEvent resultSetEvent = ringBuffer.get(seq);
+      resultSetEvent.setAvroSchema(parsedAvroSchema.getParsedSchema());
+      resultSetEvent.setAvroRecords(records);
+      ringBuffer.publish(seq);
     }
+    log.info(() -> "JDBC worker finished consuming data");
+  }
 
-    public boolean hasFinished()
-    {
-        return runningThread.getState().equals(TERMINATED);
-    }
+  public boolean hasFinished() {
+    return runningThread.getState().equals(TERMINATED);
+  }
 }

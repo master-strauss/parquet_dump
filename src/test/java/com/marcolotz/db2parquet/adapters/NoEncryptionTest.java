@@ -10,21 +10,20 @@ import org.junit.jupiter.api.Test;
 @DisplayName("When using not encryption")
 class NoEncryptionTest {
 
-    Encryptor encryption = new NoEncryption();
+  Encryptor encryption = new NoEncryption();
 
-    @DisplayName("Then the encryption should be an identity mapping")
-    @Test
-    void whenEncrypting_thenReturnsInput()
-    {
-        // Given
-        byte[] b = new byte[2048];
-        new Random().nextBytes(b);
+  @DisplayName("Then the encryption should be an identity mapping")
+  @Test
+  void whenEncrypting_thenReturnsInput() {
+    // Given
+    byte[] b = new byte[2048];
+    new Random().nextBytes(b);
 
-        // When
-        final byte[] encryptedOutput = encryption.encrypt(b);
+    // When
+    final byte[] encryptedOutput = encryption.encrypt(b);
 
-        // Then
-        assertEquals(b, encryptedOutput);
-    }
+    // Then
+    assertEquals(b, encryptedOutput);
+  }
 
 }

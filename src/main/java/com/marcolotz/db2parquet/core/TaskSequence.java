@@ -21,28 +21,33 @@ import java.util.concurrent.ThreadFactory;
 import lombok.SneakyThrows;
 
 public class TaskSequence {
+
   private static final String SCHEMA_NAME = "db2parquet";
   private static final String NAMESPACE = "com.marcolotz";
-  private JdbcProducer jdbcProducer;
-  private ParquetTransformer parquetTransformer;
-  private EncryptionTransformer encryptorTransformer;
-  private DiskConsumer diskConsumer;
+  private final JdbcProducer jdbcProducer;
+  private final ParquetTransformer parquetTransformer;
+  private final EncryptionTransformer encryptorTransformer;
+  private final DiskConsumer diskConsumer;
 
   @SneakyThrows
   public TaskSequence(JdbcToAvroWorker jdbcToAvroWorker,
-  ParquetSerializer parquetSerializer,
-  Encryptor encryptor,
-  DiskWriter diskWriter)
-  {
+    ParquetSerializer parquetSerializer,
+    Encryptor encryptor,
+    DiskWriter diskWriter) {
     // Create Disruptor Ring Buffers
-    final Disruptor<AvroResultSetEvent> avroResultSetDisruptor = createRingBuffer(64, AvroResultSetEvent.EVENT_FACTORY);
-    final Disruptor<ParquetByteSequenceEvent> parquetToEncryptionDisruptor = createRingBuffer(64, ParquetByteSequenceEvent.EVENT_FACTORY);
-    final Disruptor<EncryptedByteSequenceEvent> encryptionToDiskDisruptor = createRingBuffer(64, EncryptedByteSequenceEvent.EVENT_FACTORY);
+    final Disruptor<AvroResultSetEvent> avroResultSetDisruptor = createRingBuffer(64,
+      AvroResultSetEvent.EVENT_FACTORY);
+    final Disruptor<ParquetByteSequenceEvent> parquetToEncryptionDisruptor = createRingBuffer(64,
+      ParquetByteSequenceEvent.EVENT_FACTORY);
+    final Disruptor<EncryptedByteSequenceEvent> encryptionToDiskDisruptor = createRingBuffer(64,
+      EncryptedByteSequenceEvent.EVENT_FACTORY);
 
     // Create producers and consumers
-    jdbcProducer= new JdbcProducer(jdbcToAvroWorker, avroResultSetDisruptor);
-    parquetTransformer = new ParquetTransformer(parquetSerializer, avroResultSetDisruptor, parquetToEncryptionDisruptor);
-    encryptorTransformer = new EncryptionTransformer(encryptor, parquetToEncryptionDisruptor, encryptionToDiskDisruptor);
+    jdbcProducer = new JdbcProducer(jdbcToAvroWorker, avroResultSetDisruptor);
+    parquetTransformer = new ParquetTransformer(parquetSerializer, avroResultSetDisruptor,
+      parquetToEncryptionDisruptor);
+    encryptorTransformer = new EncryptionTransformer(encryptor, parquetToEncryptionDisruptor,
+      encryptionToDiskDisruptor);
     diskConsumer = new DiskConsumer(diskWriter, encryptionToDiskDisruptor);
 
     // Startup disruptors
@@ -51,12 +56,12 @@ public class TaskSequence {
     encryptionToDiskDisruptor.start();
   }
 
-  public void run()
-  {
+  public void run() {
     jdbcProducer.run();
   }
 
-  private <T> Disruptor<T> createRingBuffer(final int capacity, final EventFactory<T> eventFactory){
+  private <T> Disruptor<T> createRingBuffer(final int capacity,
+    final EventFactory<T> eventFactory) {
     ThreadFactory threadFactory = DaemonThreadFactory.INSTANCE;
 
     // TODO: Analyse if this is the best strategy
@@ -69,17 +74,15 @@ public class TaskSequence {
       waitStrategy);
   }
 
-  public boolean isFinished()
-  {
+  public boolean isFinished() {
     // First all ingestions need to be finished
-    if (!jdbcProducer.hasFinished())
-    {
+    if (!jdbcProducer.hasFinished()) {
       return false;
     }
 
     // Then all transformers
-    if (!(parquetTransformer.finishedProcessingAllMessages() && encryptorTransformer.finishedProcessingAllMessages()))
-    {
+    if (!(parquetTransformer.finishedProcessingAllMessages()
+      && encryptorTransformer.finishedProcessingAllMessages())) {
       return false;
     }
 

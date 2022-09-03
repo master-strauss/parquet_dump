@@ -11,9 +11,9 @@ import org.apache.avro.Schema;
 @Getter
 public class SchemaSqlMapping {
 
-    String schemaName;
-    String sqlColumnName;
-    int sqlType;
-    Schema.Type schemaType;
+  String schemaName;
+  String sqlColumnName;
+  int sqlType;
+  Schema.Type schemaType;
 
 }

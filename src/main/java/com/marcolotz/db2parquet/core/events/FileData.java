@@ -6,6 +6,6 @@ import lombok.Value;
 public
 class FileData {
 
-        String fileName;
-        byte[] contents;
+  String fileName;
+  byte[] contents;
 }

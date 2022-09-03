@@ -7,7 +7,8 @@ import org.apache.avro.generic.GenericRecord;
 
 @Data
 public class AvroResultSetEvent {
-    public final static EventFactory EVENT_FACTORY = AvroResultSetEvent::new;
-    private Schema avroSchema;
-    private GenericRecord[] avroRecords;
+
+  public final static EventFactory EVENT_FACTORY = AvroResultSetEvent::new;
+  private Schema avroSchema;
+  private GenericRecord[] avroRecords;
 }

@@ -15,52 +15,53 @@ import lombok.extern.log4j.Log4j2;
 public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceEvent>,
   EventProducer<FileData> {
 
-    private final Encryptor encryptor;
-    private final Disruptor<EncryptedByteSequenceEvent> outputDisruptor;
-    final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor;
+  final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor;
+  private final Encryptor encryptor;
+  private final Disruptor<EncryptedByteSequenceEvent> outputDisruptor;
 
-    public EncryptionTransformer(final Encryptor encryptor, final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor, final Disruptor<EncryptedByteSequenceEvent> outputDisruptor)
-    {
-        this.encryptor = encryptor;
-        this.outputDisruptor = outputDisruptor;
-        this.inputboundDisruptor = inputboundDisruptor;
-        inputboundDisruptor.handleEventsWith(getEventHandler());
-    }
+  public EncryptionTransformer(final Encryptor encryptor,
+    final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor,
+    final Disruptor<EncryptedByteSequenceEvent> outputDisruptor) {
+    this.encryptor = encryptor;
+    this.outputDisruptor = outputDisruptor;
+    this.inputboundDisruptor = inputboundDisruptor;
+    inputboundDisruptor.handleEventsWith(getEventHandler());
+  }
 
-    private FileData toEncryptedFile(final FileData notEncryptedFile)
-    {
-        return new FileData(notEncryptedFile.getFileName(), encryptor.encrypt(notEncryptedFile.getContents()));
-    }
+  private FileData toEncryptedFile(final FileData notEncryptedFile) {
+    return new FileData(notEncryptedFile.getFileName(),
+      encryptor.encrypt(notEncryptedFile.getContents()));
+  }
 
-    public EventHandler<ParquetByteSequenceEvent>[] getEventHandler() {
-        EventHandler<ParquetByteSequenceEvent> eventHandler
-                = (event, sequence, endOfBatch)
-                -> processEvent(event, sequence);
-        return new EventHandler[] { eventHandler };
-    }
+  public EventHandler<ParquetByteSequenceEvent>[] getEventHandler() {
+    EventHandler<ParquetByteSequenceEvent> eventHandler
+      = (event, sequence, endOfBatch)
+      -> processEvent(event, sequence);
+    return new EventHandler[]{eventHandler};
+  }
 
-    private void processEvent(ParquetByteSequenceEvent event, long sequence) {
-        log.debug(() -> "Starting encryption of message with sequence number: " + sequence);
-        FileData encryptedFileData = encrypt(event.getParquetFile());
-        produce(encryptedFileData);
-        log.debug(() -> "Finished encryption of message with sequence number: " + sequence);
-    }
+  private void processEvent(ParquetByteSequenceEvent event, long sequence) {
+    log.debug(() -> "Starting encryption of message with sequence number: " + sequence);
+    FileData encryptedFileData = encrypt(event.getParquetFile());
+    produce(encryptedFileData);
+    log.debug(() -> "Finished encryption of message with sequence number: " + sequence);
+  }
 
-    private FileData encrypt(FileData fileDataToEncrypt)
-    {
-        return toEncryptedFile((fileDataToEncrypt));
-    }
+  private FileData encrypt(FileData fileDataToEncrypt) {
+    return toEncryptedFile((fileDataToEncrypt));
+  }
 
-    @Override
-    public void produce(FileData encryptedFileData) {
-        final RingBuffer<EncryptedByteSequenceEvent> ringBuffer = outputDisruptor.getRingBuffer();
-        final long seq = ringBuffer.next();
-        final EncryptedByteSequenceEvent encryptEvent = ringBuffer.get(seq);
-        encryptEvent.setEncryptedData(encryptedFileData);
-        ringBuffer.publish(seq);
-    }
+  @Override
+  public void produce(FileData encryptedFileData) {
+    final RingBuffer<EncryptedByteSequenceEvent> ringBuffer = outputDisruptor.getRingBuffer();
+    final long seq = ringBuffer.next();
+    final EncryptedByteSequenceEvent encryptEvent = ringBuffer.get(seq);
+    encryptEvent.setEncryptedData(encryptedFileData);
+    ringBuffer.publish(seq);
+  }
 
-    public boolean finishedProcessingAllMessages() {
-        return inputboundDisruptor.getRingBuffer().getCursor() == outputDisruptor.getRingBuffer().getCursor();
-    }
+  public boolean finishedProcessingAllMessages() {
+    return inputboundDisruptor.getRingBuffer().getCursor() == outputDisruptor.getRingBuffer()
+      .getCursor();
+  }
 }

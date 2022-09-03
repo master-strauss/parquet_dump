@@ -15,15 +15,17 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 
 @Value
-public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>, EventProducer<FileData> {
+public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>,
+  EventProducer<FileData> {
 
   ParquetSerializer parquetSerializer;
 
   Disruptor<ParquetByteSequenceEvent> outputDisruptor;
   Disruptor<AvroResultSetEvent> inboundDisruptor;
 
-  public ParquetTransformer(final ParquetSerializer parquetSerializer, final Disruptor<AvroResultSetEvent> inboundDisruptor,final Disruptor<ParquetByteSequenceEvent> outboundDisruptor )
-  {
+  public ParquetTransformer(final ParquetSerializer parquetSerializer,
+    final Disruptor<AvroResultSetEvent> inboundDisruptor,
+    final Disruptor<ParquetByteSequenceEvent> outboundDisruptor) {
     this.parquetSerializer = parquetSerializer;
     this.outputDisruptor = outboundDisruptor;
     this.inboundDisruptor = inboundDisruptor;
@@ -34,8 +36,9 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>, Ev
   public EventHandler<AvroResultSetEvent>[] getEventHandler() {
     EventHandler<AvroResultSetEvent> eventHandler
       = (event, sequence, endOfBatch)
-      -> produce(convertToFileData(convertToParquet(event.getAvroSchema(), event.getAvroRecords())));
-    return new EventHandler[] { eventHandler };
+      -> produce(
+      convertToFileData(convertToParquet(event.getAvroSchema(), event.getAvroRecords())));
+    return new EventHandler[]{eventHandler};
   }
 
   private byte[] convertToParquet(Schema avroSchema, GenericRecord[] avroRecords) {
@@ -51,8 +54,7 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>, Ev
     ringBuffer.publish(seq);
   }
 
-  private FileData convertToFileData(final byte[] parquetBytes)
-  {
+  private FileData convertToFileData(final byte[] parquetBytes) {
     // TODO: Find a better propagation method
     return new FileData("Parquet_file_" + UUID.randomUUID(), parquetBytes);
   }
@@ -60,6 +62,7 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>, Ev
   // TODO: This could be in an abstract class...
   public boolean finishedProcessingAllMessages() {
     // All messages in the input have been transformed to the output
-    return inboundDisruptor.getRingBuffer().getCursor() == outputDisruptor.getRingBuffer().getCursor();
+    return inboundDisruptor.getRingBuffer().getCursor() == outputDisruptor.getRingBuffer()
+      .getCursor();
   }
 }

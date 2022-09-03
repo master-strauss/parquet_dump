@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TriggerController implements TriggerApi {
 
-    @Autowired
-    IngestionService ingestionService;
+  @Autowired
+  IngestionService ingestionService;
 
-    public ResponseEntity<Void> ingestData() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-    }
+  public ResponseEntity<Void> ingestData() {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
 }

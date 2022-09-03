@@ -23,16 +23,17 @@ public class IngestionCoordinator {
   Encryptor encryptor;
   DiskWriter diskWriter;
 
-  public void startIngestion()
-  {
-    log.info(() -> "Starting Ingestion: setting up " + configurationProperties.getNumberOfConcurrentSyncs() + " parallel ingestions");
+  public void startIngestion() {
+    log.info(
+      () -> "Starting Ingestion: setting up " + configurationProperties.getNumberOfConcurrentSyncs()
+        + " parallel ingestions");
     List<TaskSequence> taskSequences = new LinkedList<>();
-    for (int i = 0; i < configurationProperties.getNumberOfConcurrentSyncs(); i++)
-    {
+    for (int i = 0; i < configurationProperties.getNumberOfConcurrentSyncs(); i++) {
       // Note all the based configuration of the builder is already provided on the creation of
       // the bean
 //      final JdbcToAvroWorker jdbcToAvroWorker = jdbcToAvroWorkerBuilder.build();
-      final TaskSequence taskSequence = new TaskSequence(jdbcToAvroWorker, parquetSerializer, encryptor, diskWriter);
+      final TaskSequence taskSequence = new TaskSequence(jdbcToAvroWorker, parquetSerializer,
+        encryptor, diskWriter);
       taskSequences.add(taskSequence);
     }
     taskSequences.forEach(TaskSequence::run);

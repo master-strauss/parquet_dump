@@ -11,12 +11,13 @@ public class Db2ParquetConfigurationProperties {
 
   @Min(1)
   private int numberOfConcurrentSyncs;
-  private JdbcConfigurationProperties   jdbc;
+  private JdbcConfigurationProperties jdbc;
   @NotEmpty
   private String outputPath;
 
   @Data
-  public static class JdbcConfigurationProperties{
+  public static class JdbcConfigurationProperties {
+
     private String url;
     private String driverClass;
     private String userName;

@@ -68,8 +68,10 @@ class JdbcToAvroWorkerIT {
   void whenRetrievingJdbcSchema_thenItIsCorrectlyMappedToAvro() throws SQLException {
     // Given
     final int numberOfRowsToFetch = 2;
-    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY, NUMBER_OF_ROWS_TO_FETCH, SCHEMA_NAME, NAMESPACE);
-    Set<String> fieldNames = Set.of("id","first_name", "last_name", "address", "city", "telephone");
+    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY,
+      NUMBER_OF_ROWS_TO_FETCH, SCHEMA_NAME, NAMESPACE);
+    Set<String> fieldNames = Set.of("id", "first_name", "last_name", "address", "city",
+      "telephone");
 
     // When
     var avroSchema = jdbcToAvroWorker.getAvroSchema();
@@ -77,35 +79,40 @@ class JdbcToAvroWorkerIT {
     // Expect
     List<Field> fields = avroSchema.getParsedSchema().getFields();
     assertThat(fields).allMatch(field -> fieldNames.contains(field.name()));
-    }
+  }
 
   @Test
   @DisplayName("Then SQL rows are correctly translated to SQL entries")
   void whenRetrievingJdbcRecords_thenTheyAreCorrectlyMappedToAvro() throws SQLException {
     // Given
     int expectedCount = 10;  // From test_entries script
-    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY, NUMBER_OF_ROWS_TO_FETCH, SCHEMA_NAME, NAMESPACE);
-    Set<String> firstNames = Set.of("George", "Betty", "Eduardo", "Harold", "Peter", "Jean", "Jeff", "Maria", "David", "Carlos");
+    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY,
+      NUMBER_OF_ROWS_TO_FETCH, SCHEMA_NAME, NAMESPACE);
+    Set<String> firstNames = Set.of("George", "Betty", "Eduardo", "Harold", "Peter", "Jean", "Jeff",
+      "Maria", "David", "Carlos");
     final String testColumName = "first_name";
 
     // When
     GenericRecord[] avroRecords = jdbcToAvroWorker.produceAvroRecords();
 
     // Then
-    var nonNullRecords = Arrays.stream(avroRecords).filter(Objects::nonNull).collect(Collectors.toList());
+    var nonNullRecords = Arrays.stream(avroRecords).filter(Objects::nonNull)
+      .collect(Collectors.toList());
     assertEquals(nonNullRecords.size(), expectedCount);
 
-    assertThat(nonNullRecords).allMatch(record -> firstNames.contains((String) record.get(testColumName)));
+    assertThat(nonNullRecords).allMatch(
+      record -> firstNames.contains((String) record.get(testColumName)));
 
   }
 
   @Test
   @DisplayName("Then it will try fetching only the specified number of rows")
-  // Note: Not all DBs accept fetchSize parameters the same way. It seems that MySQL ignores it.
+    // Note: Not all DBs accept fetchSize parameters the same way. It seems that MySQL ignores it.
   void whenRetrievingJdbcRecords_thenItTriesToLimitFetchSize() throws SQLException {
     // Given
     int expectedCount = 2;
-    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY, expectedCount, SCHEMA_NAME, NAMESPACE);
+    jdbcToAvroWorker = new JdbcToAvroWorker(dataSource.getConnection(), QUERY, expectedCount,
+      SCHEMA_NAME, NAMESPACE);
 
     // When
     GenericRecord[] avroRecords = jdbcToAvroWorker.produceAvroRecords();

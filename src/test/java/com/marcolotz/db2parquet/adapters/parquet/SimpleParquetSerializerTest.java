@@ -22,87 +22,89 @@ import org.junit.jupiter.api.io.TempDir;
 
 @DisplayName("When converting a SQL table to Parquet")
 class SimpleParquetSerializerTest {
-    protected static final String ID_FIELD_NAME = "id";
-    protected static final String TEMP_FILE_NAME = "unit_test.tmp";
-    protected static final String SCHEMA_NAME = "test_schema";
-    protected static final String SCHEMA_NAMESPACE = "com.marcolotz";
-    protected static final Integer[] ID_VALUES = {0, 1, 2, 3, 4, 5, 6};
-    protected final SimpleParquetSerializer parquetSerializer = new SimpleParquetSerializer();
 
-    protected Schema schema;
-    protected GenericRecord[] records;
+  protected static final String ID_FIELD_NAME = "id";
+  protected static final String TEMP_FILE_NAME = "unit_test.tmp";
+  protected static final String SCHEMA_NAME = "test_schema";
+  protected static final String SCHEMA_NAMESPACE = "com.marcolotz";
+  protected static final Integer[] ID_VALUES = {0, 1, 2, 3, 4, 5, 6};
+  protected final SimpleParquetSerializer parquetSerializer = new SimpleParquetSerializer();
 
-    @BeforeEach
-    public void before() {
+  protected Schema schema;
+  protected GenericRecord[] records;
 
-        schema = Schema.createRecord(SCHEMA_NAME, null, SCHEMA_NAMESPACE, false);
-        List<Schema.Field> fields = new LinkedList<>();
+  @BeforeEach
+  public void before() {
 
-        // Prepare Avro Schema
-        Schema.Type columnType = Schema.Type.INT;
-        fields.add(createNullableField(schema, ID_FIELD_NAME, columnType));
-        schema.setFields(fields);
+    schema = Schema.createRecord(SCHEMA_NAME, null, SCHEMA_NAMESPACE, false);
+    List<Schema.Field> fields = new LinkedList<>();
 
-        // Translate into records
-        records = convertToGenericRecordOfIds(ID_VALUES, schema);
+    // Prepare Avro Schema
+    Schema.Type columnType = Schema.Type.INT;
+    fields.add(createNullableField(schema, ID_FIELD_NAME, columnType));
+    schema.setFields(fields);
 
+    // Translate into records
+    records = convertToGenericRecordOfIds(ID_VALUES, schema);
+
+  }
+
+  @Test
+  @DisplayName("Then avro should be correctly serialized")
+  void writeToFile(@TempDir java.nio.file.Path directory) throws IOException {
+    File tmpFile = new File(directory.toString() + "/" + TEMP_FILE_NAME);
+    testToResultFile(tmpFile);
+  }
+
+  void testToResultFile(File tempFile) throws IOException {
+
+    byte[] serializedParquet = parquetSerializer.convertToParquet(schema, records);
+
+    // dump serialization to fs:
+    try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
+      outputStream.write(serializedParquet);
     }
 
-    @Test
-    @DisplayName("Then avro should be correctly serialized")
-    void writeToFile(@TempDir java.nio.file.Path directory) throws IOException {
-        File tmpFile = new File(directory.toString() + "/" + TEMP_FILE_NAME);
-        testToResultFile(tmpFile);
+    validate(tempFile, ID_FIELD_NAME, ID_VALUES);
+  }
+
+  void validate(File file, String fieldName, Integer... expectedValues) throws IOException {
+    Path path = new Path(file.toString());
+    ParquetReader<GenericRecord> reader = AvroParquetReader.<GenericRecord>builder(path).build();
+
+    int x = 0;
+    boolean recordsRead = false;
+    for (GenericRecord record = reader.read(); record != null; record = reader.read()) {
+
+      recordsRead = true;
+      assertEquals(expectedValues[x++], record.get(fieldName));
     }
 
-    void testToResultFile(File tempFile) throws IOException {
+    assertTrue(recordsRead);
 
-        byte[] serializedParquet = parquetSerializer.convertToParquet(schema, records);
+    reader.close();
+  }
 
-        // dump serialization to fs:
-        try (FileOutputStream outputStream = new FileOutputStream(tempFile)) {
-            outputStream.write(serializedParquet);
-        }
+  private Schema.Field createNullableField(Schema recordSchema, String columnName,
+    Schema.Type type) {
 
-        validate(tempFile, ID_FIELD_NAME, ID_VALUES);
-    }
+    Schema intSchema = Schema.create(type);
+    Schema nullSchema = Schema.create(Schema.Type.NULL);
 
-    void validate(File file, String fieldName, Integer... expectedValues) throws IOException {
-        Path path = new Path(file.toString());
-        ParquetReader<GenericRecord> reader = AvroParquetReader.<GenericRecord>builder(path).build();
+    List<Schema> fieldSchemas = new LinkedList<>();
+    fieldSchemas.add(intSchema);
+    fieldSchemas.add(nullSchema);
 
-        int x = 0;
-        boolean recordsRead = false;
-        for(GenericRecord record = reader.read(); record != null; record = reader.read()) {
+    Schema fieldSchema = Schema.createUnion(fieldSchemas);
 
-            recordsRead = true;
-            assertEquals(expectedValues[x++], record.get(fieldName));
-        }
+    return new Schema.Field(columnName, fieldSchema, null, null);
+  }
 
+  private GenericRecord[] convertToGenericRecordOfIds(Integer[] idValue, Schema schema) {
+    GenericRecordBuilder builder = new GenericRecordBuilder(schema);
 
-        assertTrue(recordsRead);
-
-        reader.close();
-    }
-
-    private Schema.Field createNullableField(Schema recordSchema, String columnName, Schema.Type type) {
-
-        Schema intSchema = Schema.create(type);
-        Schema nullSchema = Schema.create(Schema.Type.NULL);
-
-        List<Schema> fieldSchemas = new LinkedList<>();
-        fieldSchemas.add(intSchema);
-        fieldSchemas.add(nullSchema);
-
-        Schema fieldSchema = Schema.createUnion(fieldSchemas);
-
-        return new Schema.Field(columnName, fieldSchema, null, null);
-    }
-
-    private GenericRecord[] convertToGenericRecordOfIds(Integer[] idValue, Schema schema) {
-        GenericRecordBuilder builder = new GenericRecordBuilder(schema);
-
-        return Arrays.stream(idValue).map(id -> builder.set(schema.getField(ID_FIELD_NAME), id).build()).toArray(GenericRecord[]::new);
-    }
+    return Arrays.stream(idValue).map(id -> builder.set(schema.getField(ID_FIELD_NAME), id).build())
+      .toArray(GenericRecord[]::new);
+  }
 
 }

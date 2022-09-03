@@ -5,6 +5,6 @@ import org.apache.avro.generic.GenericRecord;
 
 public interface ParquetSerializer {
 
-    byte[] convertToParquet(Schema avroSchema, GenericRecord[] avroRecords);
+  byte[] convertToParquet(Schema avroSchema, GenericRecord[] avroRecords);
 
 }

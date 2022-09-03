@@ -14,26 +14,26 @@ import org.junit.jupiter.api.io.TempDir;
 @DisplayName("When writing to a file")
 class NioDiskWriterTest {
 
-    @TempDir
-    Path directory;
-    DiskWriter diskWriter = new NioDiskWriter();
+  @TempDir
+  Path directory;
+  DiskWriter diskWriter = new NioDiskWriter();
 
-    @Test
-    @DisplayName("then the data should be written to a file")
-    void whenWritingToAFile_thenContentsShouldBePersisted() throws IOException {
-        // Given
-        final String test = "thisIs_aTest_String";
-        final String fileName = "test.dump";
-        final byte[] dump = test.getBytes();
-        final String outputPath = directory.toAbsolutePath() + fileName;
-        Path outputFilePath = Paths.get(outputPath);
+  @Test
+  @DisplayName("then the data should be written to a file")
+  void whenWritingToAFile_thenContentsShouldBePersisted() throws IOException {
+    // Given
+    final String test = "thisIs_aTest_String";
+    final String fileName = "test.dump";
+    final byte[] dump = test.getBytes();
+    final String outputPath = directory.toAbsolutePath() + fileName;
+    Path outputFilePath = Paths.get(outputPath);
 
-        // When
-        diskWriter.write(dump, outputPath);
+    // When
+    diskWriter.write(dump, outputPath);
 
-        // Then
-        byte[] data = Files.readAllBytes(outputFilePath);
-        assertEquals(test, new String(data));
-    }
+    // Then
+    byte[] data = Files.readAllBytes(outputFilePath);
+    assertEquals(test, new String(data));
+  }
 
 }

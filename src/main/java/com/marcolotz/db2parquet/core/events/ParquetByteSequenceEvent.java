@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ParquetByteSequenceEvent {
 
-    public final static EventFactory<ParquetByteSequenceEvent> EVENT_FACTORY = ParquetByteSequenceEvent::new;
-    private FileData parquetFile;
+  public final static EventFactory<ParquetByteSequenceEvent> EVENT_FACTORY = ParquetByteSequenceEvent::new;
+  private FileData parquetFile;
 
 }
