@@ -26,14 +26,19 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-09-12T13:25:59.525740+02:00[Europe/Zurich]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-09-12T19:24:54.979695+02:00[Europe/Zurich]")
 @Tag(name = "Trigger", description = "the Trigger API")
 public interface TriggerApi {
+
+    default Optional<NativeWebRequest> getRequest() {
+        return Optional.empty();
+    }
 
     /**
      * PUT /v1/trigger : Starts an ingestion on the configured database
      *
-     * @return Ingestion succeeded (status code 200)
+     * @return Ingestion triggered (status code 204)
+     *         or Another ingestion is currently running (status code 503)
      *         or unexpected error (status code 200)
      */
     @Operation(
@@ -41,7 +46,8 @@ public interface TriggerApi {
         summary = "Starts an ingestion on the configured database",
         tags = { "trigger" },
         responses = {
-            @ApiResponse(responseCode = "200", description = "Ingestion succeeded"),
+            @ApiResponse(responseCode = "204", description = "Ingestion triggered"),
+            @ApiResponse(responseCode = "503", description = "Another ingestion is currently running"),
             @ApiResponse(responseCode = "200", description = "unexpected error", content = {
                 @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))
             })
@@ -52,8 +58,11 @@ public interface TriggerApi {
         value = "/v1/trigger",
         produces = { "application/json" }
     )
-    java.util.concurrent.CompletableFuture<ResponseEntity<Void>> ingestData(
+    default ResponseEntity<Void> ingestData(
         
-    );
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 }
