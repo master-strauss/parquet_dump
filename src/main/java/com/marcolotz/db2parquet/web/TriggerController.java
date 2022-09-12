@@ -15,23 +15,12 @@ public class TriggerController implements TriggerApi {
   @Autowired
   IngestionService ingestionService;
 
-  public CompletableFuture<ResponseEntity<Void>> ingestData() {
-    // No controller advice due to quick and dirty implementation.
-    // I want to have exceptions and 500 being returned here.
-    // TODO: Make service async and avoid multiple parallel triggers
-    // Right now I am using @Syncronized for avoid by, but there are likely
-    // more elegant ways.
-    // TODO: This will cause timeout error for long ingestions, that's one of the
-    // reasons async should be used here.
-    return CompletableFuture.supplyAsync(() ->
-    {
-      try {
-        ingestionService.triggerIngestion();
-        return ResponseEntity.ok().build();
-      } catch (Exception e) {
-        log.error("Exception raised while processing ingestion: {}", e.toString());
-        return ResponseEntity.internalServerError().build();
-      }
-    });
+  public ResponseEntity<Void> ingestData() {
+    if (ingestionService.isBusy()) {
+      return ResponseEntity.status(503).build();
+    }
+    // Start ingestion - only error feedback to users is on the logs
+    CompletableFuture.runAsync(ingestionService::triggerIngestion);
+    return ResponseEntity.accepted().build();
   }
 }

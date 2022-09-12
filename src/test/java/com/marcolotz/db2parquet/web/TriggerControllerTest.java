@@ -1,10 +1,11 @@
 package com.marcolotz.db2parquet.web;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest( controllers = TriggerController.class )
 @DisplayName( "When using the REST API to trigger ingestions" )
@@ -39,27 +39,36 @@ class TriggerControllerTest {
     // Given
     doNothing().when(ingestionService).triggerIngestion();
 
-    final MvcResult result = mockMvc.perform(put("/v1/trigger")).andReturn();
-
     // When
-    mockMvc.perform(asyncDispatch(result)).andExpect(status().isOk());
+    mockMvc.perform(put("/v1/trigger")).andExpect(status().isAccepted());
 
     // Then
     verify(ingestionService).triggerIngestion();
   }
 
   @Test
-  @DisplayName( "Then exceptions in the ingestions are filtered out from response" )
+  @DisplayName( "Then exceptions in the ingestions are not returned to the client" )
   void whenExceptionIsRaised_ClientResponseContainsNoInformation() throws Exception {
     // Given
     doThrow(new RuntimeException("booom!")).when(ingestionService).triggerIngestion();
 
-    final MvcResult result = mockMvc.perform(put("/v1/trigger")).andReturn();
-
     // When
-    mockMvc.perform(asyncDispatch(result)).andExpect(status().is5xxServerError());
+    mockMvc.perform(put("/v1/trigger")).andExpect(status().isAccepted());
 
     // Then
     verify(ingestionService).triggerIngestion();
+  }
+
+  @Test
+  @DisplayName( "Then ingestions cannot be triggered when an ingestion is running" )
+  void whenIngestionIsHappening_thenServiceReturnsBusyStats() throws Exception {
+    // Given
+    doReturn(true).when(ingestionService).isBusy();
+
+    // When
+    mockMvc.perform(put("/v1/trigger")).andExpect(status().is(503));
+
+    // Then
+    verify(ingestionService, times(0)).triggerIngestion();
   }
 }

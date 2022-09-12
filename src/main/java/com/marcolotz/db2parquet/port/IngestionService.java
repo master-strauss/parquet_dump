@@ -4,4 +4,6 @@ public interface IngestionService {
 
   void triggerIngestion();
 
+  boolean isBusy();
+
 }

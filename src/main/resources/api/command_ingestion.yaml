@@ -14,8 +14,10 @@ paths:
       tags:
         - trigger
       responses:
-        '200':
-          description: Ingestion succeeded
+        '204':
+          description: Ingestion triggered
+        '503':
+          description: Another ingestion is currently running
         default:
           description: unexpected error
           content:
