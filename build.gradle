@@ -117,7 +117,7 @@ compileJava.dependsOn(commandApiServerCode)
 test {
     minHeapSize = "2g" // initial heap size
     maxHeapSize = "2g" // maximum heap size
-    jvmArgs '-XX:MaxPermSize=2g' // mem argument for the test JVM
+    //jvmArgs '-XX:MaxPermSize=2g' // mem argument for the test JVM - deprecated in 8.0
 }
 
 // attach the generated folder as source for this project
