@@ -1,7 +1,5 @@
 package com.marcolotz.db2parquet.adapter;
 
-import static java.lang.Thread.State.TERMINATED;
-
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;

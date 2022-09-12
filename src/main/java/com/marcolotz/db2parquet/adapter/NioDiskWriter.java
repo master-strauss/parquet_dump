@@ -1,22 +1,27 @@
 package com.marcolotz.db2parquet.adapter;
 
+import com.marcolotz.db2parquet.core.events.FileData;
 import com.marcolotz.db2parquet.port.DiskWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import lombok.SneakyThrows;
+import lombok.Value;
 
 /***
  * This class is thread safe
  */
+@Value
 public class NioDiskWriter implements DiskWriter {
 
-  @Override
+  String outputPath;
+
   @SneakyThrows
-  public void write(byte[] content, String path) {
+  private void write(byte[] content, String path) {
     // Create a new path to your file on the default file system.
     Path filePath = Paths.get(path);
     Files.createFile(filePath);
@@ -42,5 +47,10 @@ public class NioDiskWriter implements DiskWriter {
       // Write your buffer's data.
       channel.write(buf);
     }
+  }
+
+  @Override
+  public void write(FileData fileData) {
+    write(fileData.getContents(), outputPath + FileSystems.getDefault().getSeparator() + fileData.getFileName());
   }
 }

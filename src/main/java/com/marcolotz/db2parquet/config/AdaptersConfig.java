@@ -39,8 +39,8 @@ public class AdaptersConfig {
   }
 
   @Bean
-  DiskWriter diskWriter() {
-    return new NioDiskWriter();
+  DiskWriter diskWriter(final Db2ParquetConfigurationProperties db2ParquetConfigurationProperties) {
+    return new NioDiskWriter(db2ParquetConfigurationProperties.getOutputPath());
   }
 
   @Bean
