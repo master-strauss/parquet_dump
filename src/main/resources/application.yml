@@ -8,8 +8,8 @@ db2parquet:
   number-of-concurrent-syncs: 1
   output-path: /dev/null # Replace
   encryption-key: ThisIsNotAKey # Replace
-  query-template: 'SELECT *'  # Put query template here
-  schema-name: test-schema
+  query: 'SELECT *'  # Put query here
+  schema-name: testschema
   namespace: com.marcolotz
   number-of-rows-to-fetch: 10 # Replace
   jdbc:

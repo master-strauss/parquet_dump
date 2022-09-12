@@ -10,7 +10,6 @@ import com.marcolotz.db2parquet.adapters.DiskConsumer;
 import com.marcolotz.db2parquet.adapters.EncryptionTransformer;
 import com.marcolotz.db2parquet.adapters.JdbcProducer;
 import com.marcolotz.db2parquet.adapters.ParquetTransformer;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
 import com.marcolotz.db2parquet.core.events.AvroResultSetEvent;
 import com.marcolotz.db2parquet.core.events.EncryptedByteSequenceEvent;
 import com.marcolotz.db2parquet.core.events.ParquetByteSequenceEvent;
@@ -28,11 +27,12 @@ public class TaskSequence {
   private final DiskConsumer diskConsumer;
 
   @SneakyThrows
-  public TaskSequence(JdbcToAvroWorker jdbcToAvroWorker,
+  public TaskSequence(JdbcProducer jdbcProducer,
     ParquetSerializer parquetSerializer,
     Encryptor encryptor,
     DiskWriter diskWriter) {
     // Create Disruptor Ring Buffers
+    this.jdbcProducer = jdbcProducer;
     final Disruptor<AvroResultSetEvent> avroResultSetDisruptor = createRingBuffer(64,
       AvroResultSetEvent.EVENT_FACTORY);
     final Disruptor<ParquetByteSequenceEvent> parquetToEncryptionDisruptor = createRingBuffer(64,
@@ -41,7 +41,7 @@ public class TaskSequence {
       EncryptedByteSequenceEvent.EVENT_FACTORY);
 
     // Create producers and consumers
-    jdbcProducer = new JdbcProducer(jdbcToAvroWorker, avroResultSetDisruptor);
+    this.jdbcProducer.registerDisruptor(avroResultSetDisruptor);
     parquetTransformer = new ParquetTransformer(parquetSerializer, avroResultSetDisruptor,
       parquetToEncryptionDisruptor);
     encryptorTransformer = new EncryptionTransformer(encryptor, parquetToEncryptionDisruptor,

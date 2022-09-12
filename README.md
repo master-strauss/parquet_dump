@@ -49,6 +49,11 @@ This doesn't happen for disruptor.
 Disruptor has a few other nice features, like an excellent implementation for multiple producer-multiple consumer queues.
 In our case, we only used one consumer one producer implementation.
 
+One important detail is that the parallism of the JDBC query is implemented on Server side for oracle databases.
+This means that, once we provide a query with the right Parallel Execution information, it will send the SQL query to the DB that will parallelise it accordingly.
+With this in mind, it's enought to have a single JDBC client, that will be flushing data as soon as it arrives to multiple Disruptor Queues.
+I have implemented a simple round-robin implementation to make sure that whenever data is available on the client side, it will be sent to another queue.
+
 ### Interface Segregation
 
 I have used Hexagonal Architecture for this project.

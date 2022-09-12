@@ -18,7 +18,7 @@ public class Db2ParquetConfigurationProperties {
   private String encryptionKey;
 
   @NotEmpty
-  private String queryTemplate;
+  private String query;
   @NotEmpty
   private String schemaName;
   @NotEmpty

@@ -2,7 +2,7 @@ package com.marcolotz.db2parquet.config;
 
 import com.marcolotz.db2parquet.adapters.NioDiskWriter;
 import com.marcolotz.db2parquet.adapters.aes128.Aes128Encryptor;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorkerFactory;
+import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
 import com.marcolotz.db2parquet.adapters.parquet.SimpleParquetSerializer;
 import com.marcolotz.db2parquet.core.BaseIngestionService;
 import com.marcolotz.db2parquet.core.IngestionCoordinator;
@@ -11,6 +11,7 @@ import com.marcolotz.db2parquet.port.Encryptor;
 import com.marcolotz.db2parquet.port.IngestionService;
 import com.marcolotz.db2parquet.port.ParquetSerializer;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,21 +44,24 @@ public class AdaptersConfig {
   }
 
   @Bean
-  JdbcToAvroWorkerFactory jdbcToAvroWorkerFactory(final DataSource dataSource,
-    final Db2ParquetConfigurationProperties db2ParquetConfigurationProperties) {
-    return new JdbcToAvroWorkerFactory(db2ParquetConfigurationProperties().getQueryTemplate(), dataSource,
-      db2ParquetConfigurationProperties.getNumberOfRowsToFetch(), db2ParquetConfigurationProperties.getSchemaName(),
+  JdbcToAvroWorker jdbcToAvroWorker(final DataSource dataSource,
+    final Db2ParquetConfigurationProperties db2ParquetConfigurationProperties) throws SQLException {
+    return new JdbcToAvroWorker(
+      dataSource.getConnection(),
+      db2ParquetConfigurationProperties().getQuery(),
+      db2ParquetConfigurationProperties.getNumberOfRowsToFetch(),
+      db2ParquetConfigurationProperties.getSchemaName(),
       db2ParquetConfigurationProperties.getNamespace());
   }
 
   @Bean
   IngestionCoordinator ingestionCoordinator(
     final Db2ParquetConfigurationProperties configurationProperties,
-    final JdbcToAvroWorkerFactory jdbcToAvroWorkerFactory,
+    final JdbcToAvroWorker jdbcToAvroWorker,
     final ParquetSerializer parquetSerializer,
     final Encryptor encryptor,
     final DiskWriter diskWriter) {
-    return new IngestionCoordinator(configurationProperties, jdbcToAvroWorkerFactory, parquetSerializer, encryptor,
+    return new IngestionCoordinator(configurationProperties, jdbcToAvroWorker, parquetSerializer, encryptor,
       diskWriter);
   }
 

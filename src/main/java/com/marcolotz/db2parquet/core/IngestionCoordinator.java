@@ -1,7 +1,7 @@
 package com.marcolotz.db2parquet.core;
 
+import com.marcolotz.db2parquet.adapters.JdbcProducer;
 import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorkerFactory;
 import com.marcolotz.db2parquet.config.Db2ParquetConfigurationProperties;
 import com.marcolotz.db2parquet.port.DiskWriter;
 import com.marcolotz.db2parquet.port.Encryptor;
@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j2;
 public class IngestionCoordinator {
 
   Db2ParquetConfigurationProperties configurationProperties;
-  JdbcToAvroWorkerFactory jdbcToAvroWorkerFactory;
+  JdbcToAvroWorker jdbcToAvroWorker;
   ParquetSerializer parquetSerializer;
   Encryptor encryptor;
   DiskWriter diskWriter;
@@ -28,11 +28,10 @@ public class IngestionCoordinator {
       () -> "Starting Ingestion: setting up " + configurationProperties.getNumberOfConcurrentSyncs()
         + " parallel ingestions");
     List<TaskSequence> taskSequences = new LinkedList<>();
+    final JdbcProducer jdbcProducer = new JdbcProducer(jdbcToAvroWorker);
     for (int parallelWorkerNumber = 0; parallelWorkerNumber < configurationProperties.getNumberOfConcurrentSyncs();
       parallelWorkerNumber++) {
-      final JdbcToAvroWorker jdbcToAvroWorker = jdbcToAvroWorkerFactory.build(parallelWorkerNumber);
-      final TaskSequence taskSequence = new TaskSequence(jdbcToAvroWorker, parquetSerializer,
-        encryptor, diskWriter);
+      final TaskSequence taskSequence = new TaskSequence(jdbcProducer, parquetSerializer, encryptor, diskWriter);
       taskSequences.add(taskSequence);
     }
     taskSequences.forEach(TaskSequence::run);
