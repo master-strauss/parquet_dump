@@ -41,7 +41,7 @@ In order to minimize the intervals between network fetches, one could easily del
 The solution for this is a Queue like data structure between the multiple steps of the process.
 There are multiple queue implementations, including concurrent ones.
 
-I have decided to use Disruptor in this because it maximizes cache usage: The messages are usually in either L2/L3 caches - with greatly improves the speed multiple threads are accessing it some the same core or same die.
+I have decided to use Disruptor in this because it maximizes cache usage: The messages are usually in either L2/L3 caches - which greatly improves the speed multiple threads are accessing it some the same core or same die.
 In parallel to that to deal with the write contention, a queue often uses locks, which can cause a context switch to the kernel.
 When this happens the processor involved is likely to lose the data in its caches.
 This doesn't happen for disruptor.
