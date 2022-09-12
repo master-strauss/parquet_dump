@@ -34,14 +34,12 @@ public class IngestionCoordinator {
       final TaskSequence taskSequence = new TaskSequence(jdbcProducer, parquetSerializer, encryptor, diskWriter);
       taskSequences.add(taskSequence);
     }
-    taskSequences.forEach(TaskSequence::run);
+    // The jdbc producer will start all other tasks in the sequence
+    jdbcProducer.run();
     log.info(() -> "All ingestion threads are running");
 
-    // TODO: Best way would be having a Future being returned instead of doing this block here
-    while (taskSequences.stream().allMatch(TaskSequence::isFinished)) {
-      log.info(() -> "Waiting ingestion threads to complete");
-      Thread.sleep(10);
-    }
+    log.info(() -> "Waiting ingestion threads to complete..");
+    taskSequences.forEach(TaskSequence::waitForCompletion);
     log.info(() -> "Ingestion complete");
   }
 

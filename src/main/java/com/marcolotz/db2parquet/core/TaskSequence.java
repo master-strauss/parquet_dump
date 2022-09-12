@@ -18,13 +18,17 @@ import com.marcolotz.db2parquet.port.Encryptor;
 import com.marcolotz.db2parquet.port.ParquetSerializer;
 import java.util.concurrent.ThreadFactory;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class TaskSequence {
 
   private final JdbcProducer jdbcProducer;
   private final ParquetTransformer parquetTransformer;
   private final EncryptionTransformer encryptorTransformer;
   private final DiskConsumer diskConsumer;
+
+  private final int RING_BUFFER_CAPACITY = 64;
 
   @SneakyThrows
   public TaskSequence(JdbcProducer jdbcProducer,
@@ -33,11 +37,11 @@ public class TaskSequence {
     DiskWriter diskWriter) {
     // Create Disruptor Ring Buffers
     this.jdbcProducer = jdbcProducer;
-    final Disruptor<AvroResultSetEvent> avroResultSetDisruptor = createRingBuffer(64,
+    final Disruptor<AvroResultSetEvent> avroResultSetDisruptor = createRingBuffer(RING_BUFFER_CAPACITY,
       AvroResultSetEvent.EVENT_FACTORY);
-    final Disruptor<ParquetByteSequenceEvent> parquetToEncryptionDisruptor = createRingBuffer(64,
+    final Disruptor<ParquetByteSequenceEvent> parquetToEncryptionDisruptor = createRingBuffer(RING_BUFFER_CAPACITY,
       ParquetByteSequenceEvent.EVENT_FACTORY);
-    final Disruptor<EncryptedByteSequenceEvent> encryptionToDiskDisruptor = createRingBuffer(64,
+    final Disruptor<EncryptedByteSequenceEvent> encryptionToDiskDisruptor = createRingBuffer(RING_BUFFER_CAPACITY,
       EncryptedByteSequenceEvent.EVENT_FACTORY);
 
     // Create producers and consumers
@@ -52,10 +56,6 @@ public class TaskSequence {
     avroResultSetDisruptor.start();
     parquetToEncryptionDisruptor.start();
     encryptionToDiskDisruptor.start();
-  }
-
-  public void run() {
-    jdbcProducer.run();
   }
 
   private <T> Disruptor<T> createRingBuffer(final int capacity,
@@ -88,4 +88,12 @@ public class TaskSequence {
     return diskConsumer.finishedProcessingAllMessages();
   }
 
+  @SneakyThrows
+  public void waitForCompletion() {
+    // TODO: Probably a completable future here would be better
+    while (!isFinished()) {
+      Thread.sleep(10);
+    }
+    log.info("Task Sequence finished");
+  }
 }

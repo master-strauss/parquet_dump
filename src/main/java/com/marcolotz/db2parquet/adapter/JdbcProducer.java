@@ -4,13 +4,14 @@ import static java.lang.Thread.State.TERMINATED;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.marcolotz.db2parquet.adapter.avro.ParsedAvroSchema;
 import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;
+import com.marcolotz.db2parquet.adapter.avro.ParsedAvroSchema;
 import com.marcolotz.db2parquet.core.events.AvroResultSetEvent;
 import com.marcolotz.db2parquet.port.EventProducer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +22,7 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
 
   private final JdbcToAvroWorker jdbcWorker;
   private final List<Disruptor<AvroResultSetEvent>> disruptorList;
-  private Thread runningThread;
+  private CompletableFuture<Void> runningCompletableFuture;
   private int currentDisruptorListIndex = 0;
 
   public JdbcProducer(JdbcToAvroWorker jdbcWorker) {
@@ -37,20 +38,17 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
   // Just to avoid race conditions while creating the thread, probably better implementations
   // can be done here, but the overall overhead is low.
   @Synchronized
-  public void run() {
+  public CompletableFuture<Void> run() {
     log.info(() -> "Starting JDBC producer");
-    // TODO: Fix this syntax
-    final Runnable producer = () -> {
+    runningCompletableFuture = CompletableFuture.runAsync(() -> {
       try {
         produce(jdbcWorker.produceAvroRecords());
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
-    };
-    Thread thread = new Thread(producer);
-    thread.start();
-    log.info(() -> "JDBC producer running");
-    runningThread = thread;
+      log.info(() -> "JDBC producer running");
+    });
+    return runningCompletableFuture;
   }
 
   @Override
@@ -75,6 +73,6 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
   }
 
   public boolean hasFinished() {
-    return runningThread.getState().equals(TERMINATED);
+    return run().isDone();
   }
 }
