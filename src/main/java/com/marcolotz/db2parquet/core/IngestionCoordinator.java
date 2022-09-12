@@ -23,7 +23,7 @@ public class IngestionCoordinator {
   DiskWriter diskWriter;
 
   @SneakyThrows
-  public void startIngestion() {
+  public void ingest() {
     log.info(
       () -> "Starting Ingestion: setting up " + configurationProperties.getNumberOfConcurrentSyncs()
         + " parallel ingestions");
@@ -36,6 +36,14 @@ public class IngestionCoordinator {
       taskSequences.add(taskSequence);
     }
     taskSequences.forEach(TaskSequence::run);
+    log.info(() -> "All ingestion threads are running");
+
+    // TODO: Best way would be having a Future being returned instead of doing this block here
+    while (taskSequences.stream().allMatch(TaskSequence::isFinished)) {
+      log.info(() -> "Waiting ingestion threads to complete");
+      Thread.sleep(10);
+    }
+    log.info(() -> "Ingestion complete");
   }
 
 }
