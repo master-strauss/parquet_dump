@@ -20,7 +20,13 @@ public class TriggerController implements TriggerApi {
       return ResponseEntity.status(503).build();
     }
     // Start ingestion - only error feedback to users is on the logs
-    CompletableFuture.runAsync(ingestionService::triggerIngestion);
+    CompletableFuture.runAsync(ingestionService::triggerIngestion).exceptionally(this::logException);
     return ResponseEntity.accepted().build();
   }
+
+  private Void logException(Throwable throwable) {
+    log.error("The following error happened while ingesting the data: " + throwable.getMessage());
+    return null;
+  }
+
 }
