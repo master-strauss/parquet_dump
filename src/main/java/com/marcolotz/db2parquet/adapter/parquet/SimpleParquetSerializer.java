@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.parquet;
+package com.marcolotz.db2parquet.adapter.parquet;
 
 import com.marcolotz.db2parquet.port.ParquetSerializer;
 import lombok.SneakyThrows;

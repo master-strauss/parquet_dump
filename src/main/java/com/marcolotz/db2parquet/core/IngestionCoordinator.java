@@ -1,7 +1,7 @@
 package com.marcolotz.db2parquet.core;
 
-import com.marcolotz.db2parquet.adapters.JdbcProducer;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
+import com.marcolotz.db2parquet.adapter.JdbcProducer;
+import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;
 import com.marcolotz.db2parquet.config.Db2ParquetConfigurationProperties;
 import com.marcolotz.db2parquet.port.DiskWriter;
 import com.marcolotz.db2parquet.port.Encryptor;

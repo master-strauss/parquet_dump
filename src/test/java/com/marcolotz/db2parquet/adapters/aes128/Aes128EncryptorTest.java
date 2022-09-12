@@ -3,6 +3,7 @@ package com.marcolotz.db2parquet.adapters.aes128;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.marcolotz.db2parquet.adapter.aes128.Aes128Encryptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

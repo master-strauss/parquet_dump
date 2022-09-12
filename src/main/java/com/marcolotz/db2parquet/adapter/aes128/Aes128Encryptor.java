@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.aes128;
+package com.marcolotz.db2parquet.adapter.aes128;
 
 import com.marcolotz.db2parquet.port.Encryptor;
 import java.security.InvalidAlgorithmParameterException;

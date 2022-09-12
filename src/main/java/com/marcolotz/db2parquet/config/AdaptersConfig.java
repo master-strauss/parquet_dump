@@ -1,9 +1,9 @@
 package com.marcolotz.db2parquet.config;
 
-import com.marcolotz.db2parquet.adapters.NioDiskWriter;
-import com.marcolotz.db2parquet.adapters.aes128.Aes128Encryptor;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
-import com.marcolotz.db2parquet.adapters.parquet.SimpleParquetSerializer;
+import com.marcolotz.db2parquet.adapter.NioDiskWriter;
+import com.marcolotz.db2parquet.adapter.aes128.Aes128Encryptor;
+import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;
+import com.marcolotz.db2parquet.adapter.parquet.SimpleParquetSerializer;
 import com.marcolotz.db2parquet.core.BaseIngestionService;
 import com.marcolotz.db2parquet.core.IngestionCoordinator;
 import com.marcolotz.db2parquet.port.DiskWriter;

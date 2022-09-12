@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.marcolotz.db2parquet.adapter.avro.ParsedAvroSchema;
+import com.marcolotz.db2parquet.adapter.avro.ResultSetSchemaGenerator;
+import com.marcolotz.db2parquet.adapter.avro.SchemaSqlMapping;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

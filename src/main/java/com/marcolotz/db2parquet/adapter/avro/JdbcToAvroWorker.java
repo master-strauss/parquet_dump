@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.avro;
+package com.marcolotz.db2parquet.adapter.avro;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters;
+package com.marcolotz.db2parquet.adapter;
 
 import com.marcolotz.db2parquet.port.DiskWriter;
 import java.nio.ByteBuffer;

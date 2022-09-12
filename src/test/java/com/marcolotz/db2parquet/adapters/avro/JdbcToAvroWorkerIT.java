@@ -3,6 +3,7 @@ package com.marcolotz.db2parquet.adapters.avro;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

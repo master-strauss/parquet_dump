@@ -2,6 +2,7 @@ package com.marcolotz.db2parquet.adapters;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.marcolotz.db2parquet.adapter.NioDiskWriter;
 import com.marcolotz.db2parquet.port.DiskWriter;
 import java.io.IOException;
 import java.nio.file.Files;

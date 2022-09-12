@@ -1,11 +1,11 @@
-package com.marcolotz.db2parquet.adapters;
+package com.marcolotz.db2parquet.adapter;
 
 import static java.lang.Thread.State.TERMINATED;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import com.marcolotz.db2parquet.adapters.avro.JdbcToAvroWorker;
-import com.marcolotz.db2parquet.adapters.avro.ParsedAvroSchema;
+import com.marcolotz.db2parquet.adapter.avro.ParsedAvroSchema;
+import com.marcolotz.db2parquet.adapter.avro.JdbcToAvroWorker;
 import com.marcolotz.db2parquet.core.events.AvroResultSetEvent;
 import com.marcolotz.db2parquet.port.EventProducer;
 import java.sql.SQLException;

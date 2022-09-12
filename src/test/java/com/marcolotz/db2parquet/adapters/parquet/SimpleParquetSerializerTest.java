@@ -3,6 +3,7 @@ package com.marcolotz.db2parquet.adapters.parquet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.marcolotz.db2parquet.adapter.parquet.SimpleParquetSerializer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
