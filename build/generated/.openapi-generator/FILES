@@ -1,0 +1,5 @@
+README.md
+pom.xml
+src/main/java/com/marcolotz/db2parquet/api/ApiUtil.java
+src/main/java/com/marcolotz/db2parquet/api/TriggerApi.java
+src/main/java/com/marcolotz/db2parquet/api/model/Error.java

@@ -1,0 +1,16 @@
+spring:
+  main:
+    banner-mode: off
+
+db2parquet:
+  number-of-concurrent-syncs: 1
+  output-path: None
+  encryption-key: ThisIsNotAKey # Replace
+  jdbc:
+    url: jdbc:h2:~/testdb
+    driver-class: org.h2.Driver  # H2 jdbc driver
+    username: testUser
+    password: 123456
+    output-type: parquet
+    fetch-size-in-rows: 10000 # Number of rows requested to the DB on each fetch operation
+    max-file-size-in-bytes: 1073741824 # 1 GB

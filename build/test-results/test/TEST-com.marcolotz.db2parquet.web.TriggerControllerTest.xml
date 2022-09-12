@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="When using the REST API to trigger ingestions" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-09-12T11:33:01" hostname="Marcos-MBP.yallo.box" time="0.188">
+  <properties/>
+  <testcase name="Then ingestions can be triggered" classname="com.marcolotz.db2parquet.web.TriggerControllerTest" time="0.162"/>
+  <testcase name="Then exceptions in the ingestions are filtered out from response" classname="com.marcolotz.db2parquet.web.TriggerControllerTest" time="0.023"/>
+  <system-out><![CDATA[2022-09-12 13:32:58.479  INFO 8455 --- [    Test worker] c.m.d.w.TriggerControllerTest            : Starting TriggerControllerTest using Java 11.0.11 on Marcos-MBP.yallo.box with PID 8455 (started by marcolotz in /Users/marcolotz/Code/parquet_dump)
+2022-09-12 13:32:58.501  INFO 8455 --- [    Test worker] c.m.d.w.TriggerControllerTest            : No active profile set, falling back to 1 default profile: "default"
+2022-09-12 13:33:01.279  INFO 8455 --- [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2022-09-12 13:33:01.281  INFO 8455 --- [    Test worker] o.s.t.w.s.TestDispatcherServlet          : Initializing Servlet ''
+2022-09-12 13:33:01.286  INFO 8455 --- [    Test worker] o.s.t.w.s.TestDispatcherServlet          : Completed initialization in 5 ms
+2022-09-12 13:33:01.343  INFO 8455 --- [    Test worker] c.m.d.w.TriggerControllerTest            : Started TriggerControllerTest in 3.603 seconds (JVM running for 5.827)
+2022-09-12 13:33:01.547 ERROR 8455 --- [nPool-worker-19] c.m.d.w.TriggerController                : Exception raised while processing ingestion: java.lang.RuntimeException: booom!
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
