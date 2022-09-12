@@ -3,9 +3,11 @@ package com.marcolotz.db2parquet.web;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,6 +71,6 @@ class TriggerControllerTest {
     mockMvc.perform(put("/v1/trigger")).andExpect(status().is(503));
 
     // Then
-    verify(ingestionService, times(0)).triggerIngestion();
+    verify(ingestionService, never()).triggerIngestion();
   }
 }
