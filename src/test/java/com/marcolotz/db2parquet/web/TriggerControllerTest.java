@@ -52,11 +52,8 @@ class TriggerControllerTest {
     // Given
     doThrow(new RuntimeException("booom!")).when(ingestionService).triggerIngestion();
 
-    // When
+    // Expect
     mockMvc.perform(put("/v1/trigger")).andExpect(status().isAccepted());
-
-    // Then
-    verify(ingestionService).triggerIngestion();
   }
 
   @Test
