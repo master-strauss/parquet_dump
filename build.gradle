@@ -108,7 +108,8 @@ task commandApiServerCode(type: org.openapitools.generator.gradle.plugin.tasks.G
                      useBeanValidation   : "false",
                      interfaceOnly       : "true",
                      serializableModel   : "true",
-                     useTags             : "true"]
+                     useTags             : "true",
+                     responseWrapper     : "CompletableFuture"]
 }
 
 // code will be generated during compilation
