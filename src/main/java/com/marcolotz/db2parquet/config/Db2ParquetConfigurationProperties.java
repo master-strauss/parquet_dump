@@ -23,9 +23,9 @@ public class Db2ParquetConfigurationProperties {
   private String schemaName;
   @NotEmpty
   private String namespace;
-  @Min( 1 )
-  private int numberOfRowsToFetch;
-
+  // Minimum 100 MB - currently not being used
+  @Min( 104857600 )
+  private long maxFileSizeInBytes;
 
   @Data
   public static class JdbcConfigurationProperties {
@@ -38,8 +38,5 @@ public class Db2ParquetConfigurationProperties {
 
     @Min( 10 )
     private int fetchSizeInRows;
-    // Minimum 100 MB - currently not being used
-    @Min( 104857600 )
-    private long maxFileSizeInBytes;
   }
 }

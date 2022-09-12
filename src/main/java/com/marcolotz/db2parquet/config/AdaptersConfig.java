@@ -30,7 +30,9 @@ public class AdaptersConfig {
 
   @Bean
   ParquetSerializer parquetSerializer() {
-    return new SimpleParquetSerializer();
+    // Using 1 GB in memory pages for parquet serializer. This can be changed to a configuration instead if there's
+    // need. This is just used to avoid dynamic reallocation of memory
+    return new SimpleParquetSerializer(1024 * 1024 * 1024);
   }
 
   @Bean
@@ -49,7 +51,7 @@ public class AdaptersConfig {
     return new JdbcToAvroWorker(
       dataSource.getConnection(),
       db2ParquetConfigurationProperties().getQuery(),
-      db2ParquetConfigurationProperties.getNumberOfRowsToFetch(),
+      db2ParquetConfigurationProperties.getJdbc().getFetchSizeInRows(),
       db2ParquetConfigurationProperties.getSchemaName(),
       db2ParquetConfigurationProperties.getNamespace());
   }

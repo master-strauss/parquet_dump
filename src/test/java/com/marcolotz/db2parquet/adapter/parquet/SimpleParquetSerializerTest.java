@@ -28,7 +28,7 @@ class SimpleParquetSerializerTest {
   protected static final String SCHEMA_NAME = "test_schema";
   protected static final String SCHEMA_NAMESPACE = "com.marcolotz";
   protected static final Integer[] ID_VALUES = {0, 1, 2, 3, 4, 5, 6};
-  protected final SimpleParquetSerializer parquetSerializer = new SimpleParquetSerializer();
+  protected final SimpleParquetSerializer parquetSerializer = new SimpleParquetSerializer(1024 * 1024 * 64);
 
   protected Schema schema;
   protected GenericRecord[] records;

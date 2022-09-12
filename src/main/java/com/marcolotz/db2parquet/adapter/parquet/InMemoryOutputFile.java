@@ -13,11 +13,11 @@ import org.apache.parquet.io.PositionOutputStream;
  */
 public class InMemoryOutputFile implements OutputFile {
 
-  // Ideally this should be 1GB, but this puts stress in the machine loading tests
-  private static final int BUFFER_512_MB = 1024 * 1024 * 1024;
+  private final ByteArrayOutputStream byteArrayOutputStream;
 
-  private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
-    BUFFER_512_MB);
+  public InMemoryOutputFile(int bufferSizeInBytes) {
+    this.byteArrayOutputStream = new ByteArrayOutputStream(bufferSizeInBytes);
+  }
 
   @Override
   public PositionOutputStream create(long blockSizeHint) { // Mode.CREATE calls this method
