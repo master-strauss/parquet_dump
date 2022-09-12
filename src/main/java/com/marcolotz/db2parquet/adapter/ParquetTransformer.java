@@ -55,7 +55,6 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>,
   }
 
   private FileData convertToFileData(final byte[] parquetBytes) {
-    // TODO: Find a better propagation method
     return new FileData("Parquet_file_" + UUID.randomUUID(), parquetBytes);
   }
 
