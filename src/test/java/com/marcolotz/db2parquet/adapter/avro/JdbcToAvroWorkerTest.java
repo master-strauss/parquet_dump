@@ -1,4 +1,4 @@
-package com.marcolotz.db2parquet.adapters.avro;
+package com.marcolotz.db2parquet.adapter.avro;
 
 import org.junit.jupiter.api.DisplayName;
 
