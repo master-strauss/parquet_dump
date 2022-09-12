@@ -25,8 +25,6 @@ public class DiskConsumer implements EventConsumer<EncryptedByteSequenceEvent> {
   public void processEvent(final FileData fileData) {
     log.debug(() -> "starting writing " + fileData.getContents().length + " bytes to disk");
     diskWriter.write(fileData);
-    // TODO: This is a concern of the writer
-//        diskWriter.write(fileData.getContents(), configurationProperties.getOutputPath() + "/" + fileData.getFileName());
     log.debug(() -> "completed writing " + fileData.getContents().length + " bytes to disk");
     numberOfProcessedMessages++;
   }
