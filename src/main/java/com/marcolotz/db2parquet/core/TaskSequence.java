@@ -92,7 +92,7 @@ public class TaskSequence {
   public void waitForCompletion() {
     // TODO: Probably a completable future here would be better
     while (!isFinished()) {
-      Thread.sleep(10);
+      Thread.sleep(1000);
     }
     log.info("Task Sequence finished");
   }

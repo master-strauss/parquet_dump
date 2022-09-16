@@ -36,7 +36,7 @@ public class Db2ParquetConfigurationProperties {
     private String password;
     private String outputType;
 
-    @Min( 10 )
+    @Min( 1 )
     private int fetchSizeInRows;
   }
 }

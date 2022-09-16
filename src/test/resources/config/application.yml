@@ -5,6 +5,7 @@ spring:
 db2parquet:
   number-of-concurrent-syncs: 1
   output-path: None
+  query: 'SELECT * from owners'
   encryption-key: ThisIsNotAKey # Replace
   max-file-size-in-bytes: 1073741824 # 1 GB
   jdbc:

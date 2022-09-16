@@ -39,6 +39,6 @@ public class DiskConsumer implements EventConsumer<EncryptedByteSequenceEvent> {
 
   public boolean finishedProcessingAllMessages() {
     // All messages in the inbound have already been processed.
-    return inputDisruptor.getCursor() == numberOfProcessedMessages;
+    return inputDisruptor.getCursor() + 1 == numberOfProcessedMessages;
   }
 }

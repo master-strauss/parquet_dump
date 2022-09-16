@@ -105,11 +105,3 @@ Aside from controllers and configurations, I never use @Component annotations - 
 Whenever creating a Spring Bean with @Configuration (e.g. a Service bean from a @Configuration file) it is a lot easier to segregate and load only the required beans for a given Integration Test.
 IT tests in Spring are usually expensive, since they require lots of context loading.
 Reducing the number of beans to be loaded greatly improves the speed of those tests and reduces the testing interface.
-
-### Completable Futures as Controller return data type
-Servlet container threads are really expensive, and they are a scarce resource.
-Holding a container thread for long periods of time greatly reduces the capabilities of your system to scale-up.
-With this in mind, all my controllers return CompletableFutures.
-The endpoints implement similar logic too, where they log something in debug level and then spin off the heavy processing into another thread.
-Since I use async logging, even the logging is performed in another thread.
-Thus a container thread is only allocated for about the same amount of time required to spin the working thread to handle the controller request.
