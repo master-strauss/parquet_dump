@@ -97,7 +97,8 @@ class IngestionCoordinatorIT {
   @Timeout( value = 5 )
   void whenIngestionIsTriggered_thenItShouldProduceVerifyConclusionOnAllTasks() {
     // Given
-    doReturn(4).when(configurationProperties).getNumberOfConcurrentSyncs();
+    final int parallelism_factor = 4;
+    doReturn(parallelism_factor).when(configurationProperties).getNumberOfConcurrentSyncs();
     doReturn(directory.toAbsolutePath().toString()).when(configurationProperties).getOutputPath();
     doReturn("SELECT * FROM owners").when(configurationProperties).getQuery();
 
@@ -105,10 +106,10 @@ class IngestionCoordinatorIT {
     coordinator.ingest();
 
     // Then
-    verify(jdbcToAvroWorker, atLeast(4)).hasFinishedWork();
+    verify(jdbcToAvroWorker, atLeast(parallelism_factor)).hasFinishedWork();
   }
 
-  void prepareDatabase(DataSource dataSource) throws SQLException, IOException {
+  private void prepareDatabase(DataSource dataSource) throws SQLException, IOException {
     // loads data into the database
     Connection con = dataSource.getConnection();
 
@@ -135,7 +136,7 @@ class IngestionCoordinatorIT {
 
     @Bean
     @ConfigurationProperties( prefix = "db2parquet" )
-    public Db2ParquetConfigurationProperties db2ParquetConfigurationProperties() {
+    Db2ParquetConfigurationProperties db2ParquetConfigurationProperties() {
       return spy(new Db2ParquetConfigurationProperties());
     }
 
