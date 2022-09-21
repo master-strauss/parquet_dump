@@ -2,6 +2,7 @@ package com.marcolotz.db2parquet.core;
 
 import com.lmax.disruptor.BusySpinWaitStrategy;
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
@@ -62,7 +63,7 @@ public class TaskSequence {
     final EventFactory<T> eventFactory) {
     ThreadFactory threadFactory = DaemonThreadFactory.INSTANCE;
 
-    WaitStrategy waitStrategy = new BusySpinWaitStrategy();
+    WaitStrategy waitStrategy = new SleepingWaitStrategy();
     return new Disruptor<>(
       eventFactory,
       capacity,
