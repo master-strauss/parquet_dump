@@ -14,6 +14,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.avro.AvroParquetReader;
+import org.apache.parquet.avro.AvroReadSupport;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -70,7 +71,7 @@ class SimpleParquetSerializerTest {
 
   void validate(File file, String fieldName, Integer... expectedValues) throws IOException {
     Path path = new Path(file.toString());
-    ParquetReader<GenericRecord> reader = AvroParquetReader.<GenericRecord>builder(path).build();
+    ParquetReader<GenericRecord> reader = AvroParquetReader.<GenericRecord>builder(new AvroReadSupport<>(), path).build();
 
     int x = 0;
     boolean recordsRead = false;
