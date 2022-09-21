@@ -1,6 +1,6 @@
 [![Java CI with Gradle](https://github.com/MarcoLotz/parquet_dump/actions/workflows/gradle.yml/badge.svg)](https://github.com/MarcoLotz/parquet_dump/actions/workflows/gradle.yml)
 
-# Parque dump
+# Parquet dump
 
 Run parallel SQL statements on to a database, convert to Parquet, optionally encrypt and write the content to disk.
 
