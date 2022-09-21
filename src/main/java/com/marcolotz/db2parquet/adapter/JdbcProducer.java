@@ -33,9 +33,18 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
   @SneakyThrows
   public CompletableFuture<Void> run() {
     log.info(() -> "Starting JDBC producer");
-    // TODO: Look into this, I am not keen on this argument null here
-    runningCompletableFuture = CompletableFuture.runAsync(() -> produce(null));
+    runningCompletableFuture = CompletableFuture.runAsync(this::ingestionLoop);
     return runningCompletableFuture;
+  }
+
+  private void ingestionLoop() {
+    {
+      try {
+        produce(null);
+      } catch (Exception e) {
+        log.error("Exception while ingesting JDBC data: ", e);
+      }
+    }
   }
 
   @Override
@@ -44,7 +53,7 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
     while (!jdbcWorker.hasFinishedWork()) {
       // Loads Data into a chunk
       GenericRecord[] records = jdbcWorker.produceAvroRecords();
-      // TODO: Look into this null test here
+      // Since it's bucketing, if the first position of the bucket is not null, there's data to be published.
       if (records[0] != null) {
         ParsedAvroSchema parsedAvroSchema = jdbcWorker.getAvroSchema();
         // Chooses next disruptor from round-robin and write to ring buffer
@@ -68,12 +77,6 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
     }
     if (runningCompletableFuture.isDone()) {
       if (runningCompletableFuture.isCompletedExceptionally()) {
-        runningCompletableFuture.exceptionally(e ->
-        {
-          log.error("error was" + e.toString());
-          return null;
-        });
-        // TODO: Find better way to surface the exception
         throw new RuntimeException("JDBC completed with error");
       }
       return true;
