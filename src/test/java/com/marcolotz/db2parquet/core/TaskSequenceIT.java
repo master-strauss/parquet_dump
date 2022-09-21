@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,12 +53,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @SpringBootTest( properties = {
   "db2parquet.jdbc.fetch-size-in-rows=1",
 }, webEnvironment = WebEnvironment.NONE, classes = ApplicationIT.class )
 @Import( TaskSequenceITConfiguration.class )
 @DisplayName( "When deploying a processing task" )
+@DirtiesContext( classMode = ClassMode.AFTER_CLASS )
 class TaskSequenceIT {
 
   private final Db2ParquetConfigurationProperties configurationProperties;
@@ -184,14 +188,10 @@ class TaskSequenceIT {
   }
 
 
-  // TODO: Change to Sneakythrows from lombok
+  @SneakyThrows
   private boolean filesAreNotEmpty(final Path path) {
-    try {
-      byte[] data = Files.readAllBytes(path);
-      return data.length != 0;
-    } catch (Exception e) {
-      throw new RuntimeException("file not found");
-    }
+    byte[] data = Files.readAllBytes(path);
+    return data.length != 0;
   }
 
   @TestConfiguration

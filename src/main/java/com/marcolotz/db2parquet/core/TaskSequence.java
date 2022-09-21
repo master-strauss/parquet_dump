@@ -62,9 +62,8 @@ public class TaskSequence {
     final EventFactory<T> eventFactory) {
     ThreadFactory threadFactory = DaemonThreadFactory.INSTANCE;
 
-    // TODO: Analyse if this is the best strategy
     WaitStrategy waitStrategy = new BusySpinWaitStrategy();
-    return new Disruptor<T>(
+    return new Disruptor<>(
       eventFactory,
       capacity,
       threadFactory,
@@ -73,19 +72,8 @@ public class TaskSequence {
   }
 
   public boolean isFinished() {
-    // First all ingestions need to be finished
-    if (!jdbcProducer.hasFinished()) {
-      return false;
-    }
-
-    // Then all transformers
-    if (!(parquetTransformer.finishedProcessingAllMessages()
-      && encryptorTransformer.finishedProcessingAllMessages())) {
-      return false;
-    }
-
-    // Then the disk writer
-    return diskConsumer.finishedProcessingAllMessages();
+    return jdbcProducer.hasFinished() && parquetTransformer.finishedProcessingAllMessages()
+      && encryptorTransformer.finishedProcessingAllMessages() && diskConsumer.finishedProcessingAllMessages();
   }
 
   @SneakyThrows

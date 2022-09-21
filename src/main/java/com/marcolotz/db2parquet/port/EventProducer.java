@@ -1,13 +1,12 @@
 package com.marcolotz.db2parquet.port;
 
 /**
- * Producer that produces event for ring buffer.
+ * Producer of events
  */
-public interface EventProducer<EVENTTYPE> {
+public interface EventProducer {
 
   /***
    * Produces an event
-   * @param event event to be produced
    */
-  void produce(final EVENTTYPE event);
+  void produce();
 }
