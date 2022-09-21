@@ -38,7 +38,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @SpringBootTest( properties = {
-  "db2parquet.jdbc.fetch-size-in-rows=1",
+  "db2parquet.jdbc.fetch-size-in-rows=1"
 }, webEnvironment = WebEnvironment.NONE, classes = ApplicationIT.class )
 @Import( IngestionCoordinatorITConfiguration.class )
 @DisplayName( "When triggering an ingestion" )
@@ -71,7 +71,7 @@ class IngestionCoordinatorIT {
   @BeforeEach
   void before() throws SQLException, IOException {
     coordinator = new IngestionCoordinator(configurationProperties, jdbcToAvroWorker,
-      new SimpleParquetSerializer(1024 * 1024 * 1024), new Aes128Encryptor("AnyEncryptionKey".getBytes()),
+      new SimpleParquetSerializer(1024 * 1024 * 100), new Aes128Encryptor("AnyEncryptionKey".getBytes()),
       new NioDiskWriter(directory.toAbsolutePath().toString()));
     prepareDatabase(dataSource);
   }
