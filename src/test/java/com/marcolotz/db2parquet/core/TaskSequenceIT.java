@@ -36,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
+import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -187,14 +188,10 @@ class TaskSequenceIT {
   }
 
 
-  // TODO: Change to Sneakythrows from lombok
+  @SneakyThrows
   private boolean filesAreNotEmpty(final Path path) {
-    try {
-      byte[] data = Files.readAllBytes(path);
-      return data.length != 0;
-    } catch (Exception e) {
-      throw new RuntimeException("file not found");
-    }
+    byte[] data = Files.readAllBytes(path);
+    return data.length != 0;
   }
 
   @TestConfiguration
