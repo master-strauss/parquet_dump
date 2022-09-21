@@ -6,8 +6,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.marcolotz.db2parquet.core.events.AvroResultSetEvent;
 import com.marcolotz.db2parquet.core.events.FileData;
 import com.marcolotz.db2parquet.core.events.ParquetByteSequenceEvent;
-import com.marcolotz.db2parquet.port.EventConsumer;
-import com.marcolotz.db2parquet.port.EventProducer;
+import com.marcolotz.db2parquet.port.EventTransformer;
 import com.marcolotz.db2parquet.port.ParquetSerializer;
 import java.util.UUID;
 import lombok.Value;
@@ -15,8 +14,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 
 @Value
-public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>,
-  EventProducer<FileData> {
+public class ParquetTransformer implements EventTransformer<AvroResultSetEvent, FileData> {
 
   ParquetSerializer parquetSerializer;
 
@@ -36,8 +34,7 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>,
   public EventHandler<AvroResultSetEvent>[] getEventHandler() {
     EventHandler<AvroResultSetEvent> eventHandler
       = (event, sequence, endOfBatch)
-      -> produce(
-      convertToFileData(convertToParquet(event.getAvroSchema(), event.getAvroRecords())));
+      -> transform(convertToFileData(convertToParquet(event.getAvroSchema(), event.getAvroRecords())));
     return new EventHandler[]{eventHandler};
   }
 
@@ -46,7 +43,7 @@ public class ParquetTransformer implements EventConsumer<AvroResultSetEvent>,
   }
 
   @Override
-  public void produce(final FileData fileData) {
+  public void transform(final FileData fileData) {
     final RingBuffer<ParquetByteSequenceEvent> ringBuffer = outputDisruptor.getRingBuffer();
     final long seq = ringBuffer.next();
     final ParquetByteSequenceEvent encryptEvent = ringBuffer.get(seq);

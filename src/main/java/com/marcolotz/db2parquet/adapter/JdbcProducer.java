@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.avro.generic.GenericRecord;
 
 @Log4j2
-public class JdbcProducer implements EventProducer<GenericRecord[]> {
+public class JdbcProducer implements EventProducer {
 
   private final JdbcToAvroWorker jdbcWorker;
   private final List<Disruptor<AvroResultSetEvent>> disruptorList;
@@ -40,7 +40,7 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
   private void ingestionLoop() {
     {
       try {
-        produce(null);
+        produce();
       } catch (Exception e) {
         log.error("Exception while ingesting JDBC data: ", e);
       }
@@ -49,7 +49,7 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
 
   @Override
   @SneakyThrows
-  public void produce(GenericRecord[] event) {
+  public void produce() {
     while (!jdbcWorker.hasFinishedWork()) {
       // Loads Data into a chunk
       GenericRecord[] records = jdbcWorker.produceAvroRecords();

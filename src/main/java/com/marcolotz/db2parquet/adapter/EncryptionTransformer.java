@@ -7,13 +7,11 @@ import com.marcolotz.db2parquet.core.events.EncryptedByteSequenceEvent;
 import com.marcolotz.db2parquet.core.events.FileData;
 import com.marcolotz.db2parquet.core.events.ParquetByteSequenceEvent;
 import com.marcolotz.db2parquet.port.Encryptor;
-import com.marcolotz.db2parquet.port.EventConsumer;
-import com.marcolotz.db2parquet.port.EventProducer;
+import com.marcolotz.db2parquet.port.EventTransformer;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceEvent>,
-  EventProducer<FileData> {
+public class EncryptionTransformer implements EventTransformer<ParquetByteSequenceEvent, FileData> {
 
   final Disruptor<ParquetByteSequenceEvent> inputboundDisruptor;
   private final Encryptor encryptor;
@@ -43,7 +41,7 @@ public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceE
   private void processEvent(ParquetByteSequenceEvent event, long sequence) {
     log.debug(() -> "Starting encryption of message with sequence number: " + sequence);
     FileData encryptedFileData = encrypt(event.getParquetFile());
-    produce(encryptedFileData);
+    transform(encryptedFileData);
     log.debug(() -> "Finished encryption of message with sequence number: " + sequence);
   }
 
@@ -52,7 +50,7 @@ public class EncryptionTransformer implements EventConsumer<ParquetByteSequenceE
   }
 
   @Override
-  public void produce(FileData encryptedFileData) {
+  public void transform(FileData encryptedFileData) {
     final RingBuffer<EncryptedByteSequenceEvent> ringBuffer = outputDisruptor.getRingBuffer();
     final long seq = ringBuffer.next();
     final EncryptedByteSequenceEvent encryptEvent = ringBuffer.get(seq);
