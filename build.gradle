@@ -67,6 +67,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2' // DB used for testing
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 // Fix to have only log4j2 installed
