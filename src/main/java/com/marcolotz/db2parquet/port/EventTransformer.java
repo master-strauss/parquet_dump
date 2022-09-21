@@ -1,7 +1,7 @@
 package com.marcolotz.db2parquet.port;
 
-public interface EventTransformer<INPUT_EVENT, OUTPUT_EVENT_PAYLOAD> extends EventConsumer<INPUT_EVENT> {
+public interface EventTransformer<INPUT_EVENT> extends EventConsumer<INPUT_EVENT> {
 
-  void transform(OUTPUT_EVENT_PAYLOAD outputEventPayload);
+  void transform(INPUT_EVENT inputEvent);
 
 }

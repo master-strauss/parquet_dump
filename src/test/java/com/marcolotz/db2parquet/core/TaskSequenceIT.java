@@ -60,7 +60,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 }, webEnvironment = WebEnvironment.NONE, classes = ApplicationIT.class )
 @Import( TaskSequenceITConfiguration.class )
 @DisplayName( "When deploying a processing task" )
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext( classMode = ClassMode.AFTER_CLASS )
 class TaskSequenceIT {
 
   private final Db2ParquetConfigurationProperties configurationProperties;
