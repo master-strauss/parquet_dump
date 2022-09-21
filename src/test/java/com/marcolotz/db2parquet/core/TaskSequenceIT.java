@@ -52,12 +52,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @SpringBootTest( properties = {
   "db2parquet.jdbc.fetch-size-in-rows=1",
 }, webEnvironment = WebEnvironment.NONE, classes = ApplicationIT.class )
 @Import( TaskSequenceITConfiguration.class )
 @DisplayName( "When deploying a processing task" )
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class TaskSequenceIT {
 
   private final Db2ParquetConfigurationProperties configurationProperties;
