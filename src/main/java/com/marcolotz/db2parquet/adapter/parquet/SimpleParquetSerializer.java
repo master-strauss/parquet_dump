@@ -1,8 +1,8 @@
 package com.marcolotz.db2parquet.adapter.parquet;
 
 import com.marcolotz.db2parquet.port.ParquetSerializer;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.Value;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.parquet.avro.AvroParquetWriter;
@@ -15,12 +15,12 @@ import org.apache.parquet.hadoop.metadata.CompressionCodecName;
  *
  * This class is Threadsafe
  */
-@Value
+@RequiredArgsConstructor
 public class SimpleParquetSerializer implements ParquetSerializer {
 
   // Start buffer size for in-memory parquet files.
   // I suggest a large value (1GB) to avoid dynamic sizing.
-  int bufferSizeInBytes;
+  private final int bufferSizeInBytes;
 
   @Override
   @SneakyThrows

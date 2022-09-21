@@ -9,16 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.Value;
 
 /***
  * This class is thread safe
  */
-@Value
+@RequiredArgsConstructor
 public class NioDiskWriter implements DiskWriter {
 
-  String outputPath;
+  private final String outputPath;
 
   @SneakyThrows
   private void write(byte[] content, String path) {

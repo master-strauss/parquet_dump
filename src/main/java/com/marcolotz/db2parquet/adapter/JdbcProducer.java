@@ -48,8 +48,8 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
       if (records[0] != null) {
         ParsedAvroSchema parsedAvroSchema = jdbcWorker.getAvroSchema();
         // Chooses next disruptor from round-robin and write to ring buffer
-        final Disruptor<AvroResultSetEvent> currentDisruptor = disruptorList.get(
-          currentDisruptorListIndex % disruptorList.size());
+        final int roundDisruptor = currentDisruptorListIndex % (disruptorList.size() - 1);
+        final Disruptor<AvroResultSetEvent> currentDisruptor = disruptorList.get(roundDisruptor);
         final RingBuffer<AvroResultSetEvent> ringBuffer = currentDisruptor.getRingBuffer();
         final long seq = ringBuffer.next();
         final AvroResultSetEvent resultSetEvent = ringBuffer.get(seq);
@@ -63,6 +63,6 @@ public class JdbcProducer implements EventProducer<GenericRecord[]> {
   }
 
   public boolean hasFinished() {
-    return runningCompletableFuture.isDone();
+    return runningCompletableFuture != null && runningCompletableFuture.isDone();
   }
 }
