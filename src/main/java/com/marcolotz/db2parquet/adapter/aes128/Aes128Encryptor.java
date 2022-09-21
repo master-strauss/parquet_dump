@@ -32,19 +32,17 @@ public class Aes128Encryptor implements Encryptor {
   public static final int GCM_IV_LENGTH = 12;
   public static final String AES_GCM_CIPHER_LBL = "AES/GCM/NoPadding";
 
-  private final byte[] encryptionKey;
-  AesKey.ExpandedKey ENC_DEFAULT_KEY_128;
+  private final AesKey.ExpandedKey encDefaultKey128;
 
   public Aes128Encryptor(final byte[] encryptionKey) {
-    this.encryptionKey = encryptionKey;
-    ENC_DEFAULT_KEY_128 = AesKey.KeySize.AES_128.genKeysHmacSha(encryptionKey);
+    encDefaultKey128 = AesKey.KeySize.AES_128.genKeysHmacSha(encryptionKey);
   }
 
   @Override
   @SneakyThrows
   public byte[] encrypt(byte[] input) {
     log.trace(() -> "encrypting " + input.length + " of data");
-    return encryptGCM(ENC_DEFAULT_KEY_128, input);
+    return encryptGCM(encDefaultKey128, input);
   }
 
   private byte[] encryptGCM(AesKey.ExpandedKey key, byte[] txt)
@@ -104,6 +102,6 @@ public class Aes128Encryptor implements Encryptor {
   // Used only for testing
   @SneakyThrows
   byte[] decrypt(byte[] encryptedOutput) {
-    return decryptGCM(ENC_DEFAULT_KEY_128, encryptedOutput);
+    return decryptGCM(encDefaultKey128, encryptedOutput);
   }
 }

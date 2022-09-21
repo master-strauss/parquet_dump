@@ -29,6 +29,7 @@ public class IngestionCoordinator {
         + " parallel ingestions");
     List<TaskSequence> taskSequences = new LinkedList<>();
     final JdbcProducer jdbcProducer = new JdbcProducer(jdbcToAvroWorker);
+    // Parallelize to the number of concurrent syncs
     for (int parallelWorkerNumber = 0; parallelWorkerNumber < configurationProperties.getNumberOfConcurrentSyncs();
       parallelWorkerNumber++) {
       final TaskSequence taskSequence = new TaskSequence(jdbcProducer, parquetSerializer, encryptor, diskWriter);
