@@ -30,9 +30,9 @@ public class AdaptersConfig {
 
   @Bean
   ParquetSerializer parquetSerializer() {
-    // Using 1 GB in memory pages for parquet serializer. This can be changed to a configuration instead if there's
+    // Using 100 MB in memory pages for parquet serializer. This can be changed to a configuration instead if there's
     // need. This is just used to avoid dynamic reallocation of memory
-    return new SimpleParquetSerializer(1024 * 1024 * 1024);
+    return new SimpleParquetSerializer(1024 * 1024 * 100);
   }
 
   @Bean
