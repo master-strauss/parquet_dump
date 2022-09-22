@@ -71,6 +71,7 @@ class JdbcToAvroWorkerIT {
       NUMBER_OF_ROWS_TO_FETCH, SCHEMA_NAME, NAMESPACE);
     Set<String> fieldNames = Set.of("id", "first_name", "last_name", "address", "city",
       "telephone");
+    jdbcToAvroWorker.produceAvroRecords();
 
     // When
     var avroSchema = jdbcToAvroWorker.getAvroSchema();

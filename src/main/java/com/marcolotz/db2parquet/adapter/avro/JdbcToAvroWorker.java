@@ -13,36 +13,48 @@ import org.apache.avro.generic.GenericRecordBuilder;
 public class JdbcToAvroWorker {
 
   private final int numberOfRowsToFetch;
-  private final ResultSet resultSet;
+  private final PreparedStatement stmt;
+  private final String schemaName;
+  private final String namespace;
   @Getter
-  private final ParsedAvroSchema avroSchema;
+  private ParsedAvroSchema avroSchema;
+  private ResultSet resultSet;
   private boolean isFinished = false;
+  private boolean isIngestionRunning = false;
 
   public JdbcToAvroWorker(final Connection dbConnection, final String query,
     final int numberOfRowsToFetch, final String schemaName, final String namespace)
     throws SQLException {
     this.numberOfRowsToFetch = numberOfRowsToFetch;
-    PreparedStatement stmt = dbConnection.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY,
-      ResultSet.CONCUR_READ_ONLY);
+    this.schemaName = schemaName;
+    this.namespace = namespace;
+    this.stmt = dbConnection.prepareStatement(query, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
     stmt.setFetchSize(numberOfRowsToFetch);
-
-    log.debug(() -> "Evaluated query is: " + query);
-    this.resultSet = stmt.executeQuery();
-
-    avroSchema = new ResultSetSchemaGenerator().generateSchema(resultSet, schemaName, namespace);
+    log.debug(() -> "Evaluated query is: {}" + query);
   }
 
+  // TODO: maybe add synchronization here?
   public GenericRecord[] produceAvroRecords() throws SQLException {
+    if (!isIngestionRunning) {
+      log.info("Executing query and creating AVRO schema");
+      this.resultSet = stmt.executeQuery();
+      avroSchema = new ResultSetSchemaGenerator().generateSchema(resultSet, schemaName, namespace);
+      isIngestionRunning = true;
+    }
+    long numberOfIngestedRows = 0;
     GenericRecord[] genericRecordsBatch = new GenericRecord[numberOfRowsToFetch];
     for (int count = 0; count < numberOfRowsToFetch; count++) {
       if (resultSet.next()) {
         GenericRecord generatedRecord = convertToGenericRecord(resultSet);
         genericRecordsBatch[count] = generatedRecord;
+        numberOfIngestedRows++;
       } else {
         isFinished = true;
+        isIngestionRunning = false;
         break;
       }
     }
+    log.info("JDBC Producer finished ingesting {} rows from the database", numberOfIngestedRows);
     return genericRecordsBatch;
   }
 
