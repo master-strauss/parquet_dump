@@ -1,6 +1,7 @@
 package com.marcolotz.db2parquet.core;
 
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -90,6 +91,24 @@ class IngestionCoordinatorIT {
 
     // Then
     verify(jdbcToAvroWorker, atLeast(1)).produceAvroRecords();
+  }
+
+  @Test
+  @DisplayName( "Then all records should be consumed" )
+  @Timeout( value = 5 )
+  void whenIngestionIsTriggered_thenItWillConsumerAllDatabaseRows() throws SQLException {
+    // Given
+    doReturn(1).when(configurationProperties).getNumberOfConcurrentSyncs();
+    doReturn(directory.toAbsolutePath().toString()).when(configurationProperties).getOutputPath();
+    doReturn("SELECT * FROM owners").when(configurationProperties).getQuery();
+
+    // When
+    coordinator.ingest();
+
+    // Then
+    // There are exactly 10 owners in the test data
+    verify(jdbcToAvroWorker, atLeast(10)).produceAvroRecords();
+    verify(jdbcToAvroWorker, atMost(11)).produceAvroRecords();
   }
 
   @Test
