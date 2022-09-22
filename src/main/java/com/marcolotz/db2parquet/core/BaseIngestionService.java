@@ -17,7 +17,10 @@ public class BaseIngestionService implements IngestionService {
   public void triggerIngestion() {
     isBusy = true;
     log.info("Starting ingestion");
+    long startTimeInMilliseconds = System.currentTimeMillis();
     ingestionCoordinator.ingest();
+    long numberOfSeconds = ((System.currentTimeMillis() - startTimeInMilliseconds) / 1000);
+    log.info("Ingestion took " + numberOfSeconds + " seconds to complete");
     isBusy = false;
   }
 
