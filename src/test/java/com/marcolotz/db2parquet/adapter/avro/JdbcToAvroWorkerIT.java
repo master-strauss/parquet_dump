@@ -25,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 
 @SpringBootTest
-@DisplayName( "When converting JDBC information to Avro..." )
+@DisplayName( "When converting JDBC information to Avro" )
 class JdbcToAvroWorkerIT {
 
   private static final String QUERY = "SELECT * FROM owners";
