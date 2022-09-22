@@ -1,3 +1,5 @@
+logging.level:
+  com.marcolotz: INFO
 spring:
   main:
     banner-mode: off
@@ -11,7 +13,7 @@ db2parquet:
   query: 'SELECT *'  # Put query here
   schema-name: testschema
   namespace: com.marcolotz
-  max-file-size-in-bytes: 1073741824 # 1 GB
+  max-file-size-in-bytes: 104857600 # 100 MB
   jdbc:
     url: jdbc:oracle:thin:@192.168.100.1:5521/mydbservice?oracle.net.httpsProxyHost=myproxy&oracle.net.httpsProxyPort=80  # Replace
     driver-class: oracle.jdbc.driver.OracleDriver
