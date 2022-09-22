@@ -29,21 +29,12 @@ public interface ResultSetTransformer {
       case Types.BIGINT:
       case Types.ROWID:
         return resultSet.getInt(mapping.getSqlColumnName());
-      case Types.CHAR:
-      case Types.VARCHAR:
-      case Types.LONGVARCHAR:
-      case Types.NCHAR:
-      case Types.NVARCHAR:
-      case Types.LONGNVARCHAR:
-      case Types.SQLXML:
-        return resultSet.getString(mapping.getSqlColumnName());
       case Types.REAL:
       case Types.FLOAT:
         return resultSet.getFloat(mapping.getSqlColumnName());
       case Types.DOUBLE:
         return resultSet.getDouble(mapping.getSqlColumnName());
       case Types.NUMERIC:
-        return resultSet.getBigDecimal(mapping.getSqlColumnName());
       case Types.DECIMAL:
         return resultSet.getBigDecimal(mapping.getSqlColumnName());
       case Types.DATE:
@@ -71,6 +62,15 @@ public interface ResultSetTransformer {
       case Types.REF_CURSOR:
         return resultSet.getByte(mapping.getSqlColumnName());
       default:
+        /***
+         * case Types.CHAR:
+         * case Types.VARCHAR:
+         * case Types.LONGVARCHAR:
+         * case Types.NCHAR:
+         * case Types.NVARCHAR:
+         * case Types.LONGNVARCHAR:
+         * case Types.SQLXML:
+         */
         return resultSet.getString(mapping.getSqlColumnName());
     }
   }
