@@ -15,7 +15,7 @@ db2parquet:
   namespace: com.marcolotz
   max-file-size-in-bytes: 104857600 # 100 MB
   jdbc:
-    url: jdbc:oracle:thin:@192.168.100.1:5521/mydbservice?oracle.net.httpsProxyHost=myproxy&oracle.net.httpsProxyPort=80  # Replace
+    url: jdbc:oracle:thin:@192.168.100.1:5521/mydbservice?oracle.net.httpsProxyHost=myproxy&oracle.net.httpsProxyPort=80&sdu=2097152&recv_buf_size=3072000&send_buf_size=3072000  # Replace
     driver-class: oracle.jdbc.driver.OracleDriver
     username: no-user  # Replace
     password: no-password  # Replace
