@@ -63,7 +63,8 @@ public class TaskSequence {
     final EventFactory<T> eventFactory) {
     ThreadFactory threadFactory = DaemonThreadFactory.INSTANCE;
 
-    WaitStrategy waitStrategy = new SleepingWaitStrategy();
+    // 1 MS instead of 100 ns.
+    WaitStrategy waitStrategy = new SleepingWaitStrategy(200, 1_000_000);
     return new Disruptor<>(
       eventFactory,
       capacity,
