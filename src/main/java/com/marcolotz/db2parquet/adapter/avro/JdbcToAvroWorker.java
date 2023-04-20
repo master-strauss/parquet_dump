@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lombok.Getter;
+import lombok.Synchronized;
 import lombok.extern.log4j.Log4j2;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
@@ -34,6 +35,7 @@ public class JdbcToAvroWorker {
   }
 
   // TODO: maybe add synchronization here?
+  @Synchronized
   public GenericRecord[] produceAvroRecords() throws SQLException {
     if (!isIngestionRunning) {
       log.info("Executing query and creating AVRO schema");
