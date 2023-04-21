@@ -54,6 +54,7 @@ class JdbcToAvroWorkerIT {
     prepareDatabase(dataSource);
   }
 
+  @Synchronized
   void prepareDatabase(DataSource dataSource) throws SQLException, IOException {
     // loads data into the database
     Connection con = dataSource.getConnection();
