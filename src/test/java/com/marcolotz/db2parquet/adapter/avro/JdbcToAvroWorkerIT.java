@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
-import lombok.Synchronized;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.io.IOUtils;
@@ -42,7 +41,6 @@ class JdbcToAvroWorkerIT {
     this.dataSource = dataSource;
   }
 
-  @Synchronized
   private static String convertResourceToString(final String resourceFilePath) throws IOException {
     ClassPathResource resource = new ClassPathResource(resourceFilePath);
     InputStream inputStream = resource.getInputStream();
@@ -54,7 +52,6 @@ class JdbcToAvroWorkerIT {
     prepareDatabase(dataSource);
   }
 
-  @Synchronized
   void prepareDatabase(DataSource dataSource) throws SQLException, IOException {
     // loads data into the database
     Connection con = dataSource.getConnection();
