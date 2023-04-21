@@ -60,7 +60,6 @@ public class JdbcToAvroWorker {
     return genericRecordsBatch;
   }
 
-  @Synchronized
   private GenericRecord convertToGenericRecord(ResultSet resultSet) throws SQLException {
     GenericRecordBuilder builder = new GenericRecordBuilder(avroSchema.getParsedSchema());
 
