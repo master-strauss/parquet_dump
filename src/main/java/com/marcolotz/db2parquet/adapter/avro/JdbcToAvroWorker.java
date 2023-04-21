@@ -35,6 +35,7 @@ public class JdbcToAvroWorker {
   }
 
   // TODO: maybe add synchronization here?
+  @Synchronized
   public GenericRecord[] produceAvroRecords() throws SQLException {
     if (!isIngestionRunning) {
       log.info("Executing query and creating AVRO schema");
