@@ -41,6 +41,7 @@ class JdbcToAvroWorkerIT {
     this.dataSource = dataSource;
   }
 
+  @Synchronized
   private static String convertResourceToString(final String resourceFilePath) throws IOException {
     ClassPathResource resource = new ClassPathResource(resourceFilePath);
     InputStream inputStream = resource.getInputStream();
